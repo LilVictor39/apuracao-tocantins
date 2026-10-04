@@ -64,4 +64,17 @@ html[data-theme="dark"] .evo-tick{fill:var(--muted)}
 html[data-theme="dark"] .guide-grid article{background:#2b3029;border-color:#495344}
 html[data-theme="dark"] .guide-grid h3{color:var(--text)}
 html[data-theme="dark"] .jump,html[data-theme="dark"] .site-header{background:#151a18f2}
+
+/* Quatro disputas, com espaço para ler as candidaturas no computador. */
+.race-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.candidate-group-title{font-size:13px;font-weight:600;margin:20px 0 3px;color:var(--text)}
+.candidate-more{margin-top:12px;border-top:1px solid var(--line)}
+.candidate-more summary{cursor:pointer;padding:13px 0;color:var(--accent);font-size:12px;font-weight:600}
+.candidate-more summary:hover{text-decoration:underline}
+.candidate-more .candidate-list{margin-top:0}
+.race-card:nth-child(4) .race-head{background:#eaf0f1}
+.race-card:nth-child(4) .seats{color:#496a70;border-color:#c6d9dc}
+html[data-theme="dark"] .race-card:nth-child(4) .race-head{background:#253638}
+html[data-theme="dark"] .race-card:nth-child(4) .seats{color:#c0dce0;border-color:#45636a}
+@media(max-width:760px){.race-grid{grid-template-columns:1fr}}
 html[data-theme="dark"] .toast{background:#efe3d1;color:#242c24}

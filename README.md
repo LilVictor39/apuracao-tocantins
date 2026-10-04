@@ -1,6 +1,6 @@
 # Apuração · Tocantins 2026
 
-Painel pessoal de presidente (Brasil ou Tocantins), governador e senador (Tocantins), para o **1º turno de 4 de outubro de 2026**. HTML, CSS e JavaScript; sem dependências de execução, cadastro ou chave de API.
+Painel pessoal de presidente (Brasil ou Tocantins), governador, senador e deputado estadual (Tocantins), para o **1º turno de 4 de outubro de 2026**. HTML, CSS e JavaScript; sem dependências de execução, cadastro ou chave de API.
 
 ## Usar no computador
 
@@ -26,11 +26,12 @@ No computador, rode `npm run phone` (a partir da pasta `resultado` ou desta). O 
 - **Maioria absoluta:** para governador e presidente (nacional), mostra se o líder passa de 50% dos votos válidos, usando o percentual publicado pelo TSE. Uma marca vermelha indica os 50% nas barras. Não se aplica ao Senado nem ao recorte estadual do presidente.
 - **Evolução:** gráfico dos percentuais a cada totalização, registrado pelo navegador (localStorage) enquanto o painel está aberto. Não é série oficial do TSE.
 - **Alertas** (botão no topo da lista): aviso sonoro, na tela e, quando permitido, notificação do sistema nos marcos de 50%, 90% e 100% das seções e quando muda quem lidera (só a partir de 10% das seções, para evitar ruído). Com alertas ligados o painel continua consultando em segundo plano e tenta manter a tela acesa; no celular, bloquear a tela ou fechar o navegador interrompe as consultas. O primeiro dado recebido serve só de referência e não gera alerta.
+- **Deputado estadual:** mostra os mais votados durante a parcial e destaca as candidaturas marcadas como eleitas pelo TSE na totalização. A lista completa fica em “Ver outras candidaturas”. A eleição é proporcional; a ordem geral de votos não determina sozinha as 24 vagas. Para esse cargo, os alertas cobrem os marcos de totalização, sem avisos de mudança de liderança ou margem da última vaga.
 
 ## Dados e comportamento
 
 - Fonte: [documentação técnica do TSE](https://www.tse.jus.br/eleicoes/informacoes-tecnicas-sobre-a-divulgacao-de-resultados), formato EA20.
-- Eleições 6257 (federal) e 6259 (estadual), ambiente oficial, ciclo ele2026, cargos 0001, 0003 e 0005.
+- Eleições 6257 (federal) e 6259 (estadual), ambiente oficial, ciclo ele2026, cargos 0001, 0003, 0005 e 0007.
 - Consultas diretas pelo navegador a cada 30 segundos; pausadas em abas em segundo plano ou pelo controle Automático.
 - HTTP 404 e formato inesperado: pausa de cinco minutos; 403/429: pausa global mínima de dez minutos. Erros de rede têm espera crescente.
 - O armazenamento local conserva a última resposta válida e a preferência de abrangência. Resultados restaurados ou sem atualização recebem aviso de consulta anterior.

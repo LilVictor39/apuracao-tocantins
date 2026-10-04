@@ -14,12 +14,24 @@ function fixture(office = OFFICES[0], region = office.region) {
     s: { pst: '12,34', st: '1234', ts: '10000' }, v: { vv: '1000', vb: '12', tvn: '24' },
   };
 }
-test('endereços oficiais dos três cargos e recorte estadual', () => {
+test('endereços oficiais dos quatro cargos e recorte estadual', () => {
   assert.equal(resultUrl(OFFICES[0]), 'https://resultados.tse.jus.br/oficial/ele2026/6257/dados/br/br-c0001-e006257-u.json');
   assert.ok(resultUrl(OFFICES[0], 'to').endsWith('/to/to-c0001-e006257-u.json'));
   assert.ok(resultUrl(OFFICES[1]).endsWith('/to/to-c0003-e006259-u.json'));
   assert.ok(resultUrl(OFFICES[2]).endsWith('/to/to-c0005-e006259-u.json'));
+  assert.ok(resultUrl(OFFICES[3]).endsWith('/to/to-c0007-e006259-u.json'));
   assert.throws(() => resultUrl(OFFICES[1], 'br'));
+});
+test('deputado estadual usa resultado proporcional e situação oficial de cada candidatura', () => {
+  const office = OFFICES[3];
+  const raw = fixture(office);
+  raw.carg[0].agr[0].par[0].cand[1].st = 'Eleito por QP';
+  const partial = normalize(raw, office);
+  assert.equal(partial.seats, 24);
+  assert.equal(partial.candidates[0].votes, 750);
+  assert.equal(partial.candidates[0].status, '');
+  assert.equal(partial.candidates[1].status, 'Eleito por QP');
+  assert.equal(office.proportional, true);
 });
 test('arquivo municipal usa código TSE com cinco dígitos e valida a abrangência', () => {
   assert.equal(municipalUrl(OFFICES[1], '73008'), 'https://resultados.tse.jus.br/oficial/ele2026/6259/dados/to/to73008-c0003-e006259-u.json');

@@ -62,6 +62,7 @@ function emptyContent(state) {
   else if (state.error === 422) { title = 'Não foi possível validar os dados'; message = 'O arquivo recebido não corresponde ao formato ou à eleição esperada. Consulte o TSE enquanto isso.'; }
   else if (state.error) { title = 'Não foi possível consultar o TSE'; message = 'Pode haver uma falha de rede, indisponibilidade da fonte ou bloqueio de acesso pelo navegador.'; }
   else if (state.data && !state.data.disclosed) { title = 'Aguardando a divulgação'; message = 'O arquivo oficial foi recebido, mas ainda não apresenta uma totalização liberada para este cargo.'; }
+  else if (state.office.proportional && state.data?.candidates.length && !state.data.candidates.some(candidate => candidate.votes > 0)) { title = 'Aguardando votos'; message = 'As candidaturas foram recebidas, mas ainda não há votos publicados para este cargo.'; }
   else if (state.data) { title = 'Nenhum candidato no arquivo'; message = 'O TSE ainda não informou candidaturas neste arquivo. O painel continua verificando.'; }
   else if (Date.now() < START) { title = 'A apuração vem a seguir'; message = 'A divulgação está prevista a partir das 17h de 4 de outubro, no horário de Brasília.'; }
   return '<div class="empty-state">' + radar + '<h3>' + title + '</h3><p>' + message + '</p>' +
@@ -77,9 +78,23 @@ function candidateContent(candidate) {
     (candidate.destination && candidate.destination !== 'Válido' ? '<div class="candidate-destination">Destinação: ' + esc(candidate.destination) + '</div>' : '') + '</li>';
 }
 
+function candidateResults(data, office, area) {
+  if (!data?.candidates.length) return '';
+  if (!office.proportional) return '<ol class="candidate-list">' + data.candidates.map(candidateContent).join('') + '</ol><p class="results-caption">Votos computados e percentuais publicados pelo TSE.' + (office.code === 1 && area === 'to' ? ' Recorte estadual; a decisão é nacional.' : '') + '</p>';
+  const elected = data.candidates.filter(candidate => /^eleit[oa](?:\s|$)/i.test(candidate.status));
+  const featured = elected.length ? elected : data.candidates.slice(0, 12);
+  const remaining = elected.length ? data.candidates.filter(candidate => !elected.includes(candidate)) : data.candidates.slice(12);
+  const heading = elected.length ? 'Eleitos conforme o TSE (' + elected.length + ')' : 'Mais votados até agora';
+  const note = elected.length ? 'A situação de eleito é a informada pelo TSE.' : 'A votação é proporcional: estar entre os mais votados não garante uma vaga. Os eleitos aparecerão quando o TSE informar a situação das candidaturas.';
+  return '<h4 class="candidate-group-title">' + heading + '</h4><ol class="candidate-list">' + featured.map(candidateContent).join('') + '</ol>' +
+    (remaining.length ? '<details class="candidate-more"><summary>Ver ' + count(remaining.length) + ' ' + (elected.length ? 'demais candidaturas' : 'outras candidaturas') + '</summary><ol class="candidate-list">' + remaining.map(candidateContent).join('') + '</ol></details>' : '') +
+    '<p class="results-caption">' + note + ' Votos e percentuais publicados pelo TSE.</p>';
+}
+
 function renderCard(office) {
   const state = stateFor(office), data = state.data;
   const stale = state.cached || Boolean(state.error);
+  const moreOpen = $('body-' + office.id).querySelector('.candidate-more')?.open || false;
   $('area-' + office.id).textContent = state.area === 'br' ? '⌖ Votação nacional' : '⌖ Tocantins';
   if (office.code === 1) document.querySelectorAll('[data-region]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.region === region)));
   const status = data ? stale ? 'Consulta anterior · sem atualização' : data.disclosed ? data.completed ? 'Totalização final · TSE' : 'Resultado parcial · TSE' : 'Aguardando divulgação' : state.error ? 'Dados indisponíveis' : 'Aguardando dados';
@@ -88,10 +103,12 @@ function renderCard(office) {
   $('body-' + office.id).innerHTML = '<div class="progress-label"><span>Seções totalizadas</span><strong>' + pct(progress) + '</strong></div>' +
     '<div class="progress-track" aria-hidden="true"><div class="progress-fill" style="width:' + (progress ?? 0) + '%"></div></div><p class="section-count">' + sectionText + '</p>' +
     '<div class="race-status ' + (data && !stale && data.disclosed ? 'current' : '') + '">' + status + '</div>' +
-    (data?.candidates.length ? '<ol class="candidate-list">' + data.candidates.map(candidateContent).join('') + '</ol><p class="results-caption">Votos computados e percentuais publicados pelo TSE.' + (office.code === 1 && state.area === 'to' ? ' Recorte estadual; a decisão é nacional.' : '') + '</p>' : emptyContent(state)) +
+    (data?.candidates.length && (!office.proportional || data.candidates.some(candidate => candidate.votes > 0)) ? candidateResults(data, office, state.area) : emptyContent(state)) +
     (data?.noWinner ? '<p class="race-note">O TSE informa totalização sem atribuição de eleitos. ' + esc(data.reasons.join(' · ')) + '</p>' : '') +
     (data && stale ? '<p class="race-note">Exibindo a última consulta recebida. Esses dados podem estar desatualizados.</p>' : '') +
     '<dl class="race-totals"><div><dt>Válidos</dt><dd>' + count(data?.valid) + '</dd></div><div><dt>Brancos</dt><dd>' + count(data?.blank) + '</dd></div><div><dt>Nulos</dt><dd>' + count(data?.nullVotes) + '</dd></div></dl>';
+  const more = $('body-' + office.id).querySelector('.candidate-more');
+  if (more) more.open = moreOpen;
   decorate(state, $('body-' + office.id));
   const sourceTime = data?.updated ? 'Totalização: ' + data.updated : data?.generated ? 'Arquivo: ' + data.generated : 'Horário do TSE ainda não recebido';
   $('footer-' + office.id).innerHTML = '<span class="timestamp">' + esc(sourceTime) + (data?.updated || data?.generated ? ' (Brasília)' : '') +
@@ -106,14 +123,14 @@ function connection() {
   let title, detail;
   if (!navigator.onLine) { title = 'Você está sem conexão'; detail = 'Os dados recebidos continuam visíveis. A consulta será retomada quando a conexão voltar.'; }
   else if (Date.now() < blockedUntil) { title = 'A fonte limitou as consultas'; detail = 'O painel aguarda pelo menos dez minutos antes de tentar novamente.'; }
-  else if (fresh.length === 3) { title = withVotes.length ? 'Resultados recebidos do TSE' : 'Aguardando a divulgação dos votos'; detail = 'Última consulta bem-sucedida às ' + clock.format(recent) + '. Horário de Brasília.'; }
+  else if (fresh.length === OFFICES.length) { title = withVotes.length ? 'Resultados recebidos do TSE' : 'Aguardando a divulgação dos votos'; detail = 'Última consulta bem-sucedida às ' + clock.format(recent) + '. Horário de Brasília.'; }
   else if (fresh.length) { title = 'Parte dos dados foi recebida'; detail = 'Alguns cargos estão temporariamente sem atualização. Confira o aviso em cada painel.'; }
   else if (active.some(state => state.error)) { title = 'Os resultados estão indisponíveis neste momento'; detail = 'O painel tentará novamente com um intervalo maior. Você também pode acompanhar pelo site do TSE.'; }
-  else if (busy) { title = 'Consultando os resultados'; detail = 'Buscando os arquivos oficiais do TSE para os três cargos.'; }
+  else if (busy) { title = 'Consultando os resultados'; detail = 'Buscando os arquivos oficiais do TSE para os ' + OFFICES.length + ' cargos.'; }
   else { title = 'Aguardando os primeiros resultados'; detail = 'A divulgação está prevista a partir das 17h de 4 de outubro, no horário de Brasília.'; }
   $('connection-title').textContent = title;
   $('connection-detail').textContent = detail;
-  $('connection-dot').classList.toggle('live', fresh.length === 3 && navigator.onLine && Date.now() >= blockedUntil);
+  $('connection-dot').classList.toggle('live', fresh.length === OFFICES.length && navigator.onLine && Date.now() >= blockedUntil);
 }
 
 function tick() {

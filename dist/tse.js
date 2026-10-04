@@ -3,6 +3,7 @@ export const OFFICES = [
   { id: 'presidente', name: 'Presidente', code: 1, election: 6257, region: 'br', seats: 1, label: 'EXECUTIVO FEDERAL' },
   { id: 'governador', name: 'Governador', code: 3, election: 6259, region: 'to', seats: 1, label: 'EXECUTIVO ESTADUAL' },
   { id: 'senador', name: 'Senador', code: 5, election: 6259, region: 'to', seats: 2, label: 'SENADO FEDERAL' },
+  { id: 'deputado-estadual', name: 'Deputado estadual', code: 7, election: 6259, region: 'to', seats: 24, proportional: true, label: 'ASSEMBLEIA LEGISLATIVA' },
 ];
 export const SOURCE = 'https://resultados.tse.jus.br';
 export const START = Date.parse('2026-10-04T17:00:00-03:00');

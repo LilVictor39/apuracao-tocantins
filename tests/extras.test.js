@@ -26,6 +26,24 @@ test('maioria absoluta: só uma vaga, e presidente só no recorte nacional', () 
   assert.ok(majority(d, OFFICES[0], 'br'));
   assert.equal(majority({ ...d, seats: 2 }, OFFICES[2], 'to'), null);
 });
+test('deputado estadual não usa margem da última vaga nem alerta de troca entre mais votados', () => {
+  const office = OFFICES[3];
+  const sample = data([cand('a', 'A', 10, 55), cand('b', 'B', 8, 45)], { seats: 24 });
+  assert.equal(margin(sample, office), null);
+  assert.equal(majority(sample, office, 'to'), null);
+  const originalStorage = globalThis.localStorage;
+  const values = new Map();
+  globalThis.localStorage = { getItem: key => values.get(key) ?? null, setItem: (key, value) => values.set(key, value) };
+  try {
+    const state = { key: 'deputado-estadual:to', office, area: 'to', data: sample };
+    assert.deepEqual(observe(state), { leadChanged: false, completed: false });
+    state.data = data([cand('b', 'B', 12, 55), cand('a', 'A', 10, 45)], { seats: 24, progress: 100, completed: true });
+    assert.deepEqual(observe(state), { leadChanged: false, completed: true });
+  } finally {
+    if (originalStorage === undefined) delete globalThis.localStorage;
+    else globalThis.localStorage = originalStorage;
+  }
+});
 
 test('marcos de 50%, 90% e 100% não repetem', () => {
   assert.deepEqual(newMarks([], 12, false), { all: [], fresh: [] });

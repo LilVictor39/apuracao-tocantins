@@ -20,7 +20,7 @@ export function stampToMs(text) {
 
 // Diferença entre quem ocupa a última vaga e o primeiro fora dela (1º x 2º; no Senado, 2º x 3º).
 export function margin(data, office) {
-  if (!data?.disclosed) return null;
+  if (!data?.disclosed || office.proportional) return null;
   const seats = data.seats || office.seats || 1;
   const list = data.candidates;
   if (list.length <= seats) return null;
@@ -32,7 +32,7 @@ export function margin(data, office) {
 
 // Maioria absoluta só faz sentido em disputas de uma vaga e, para presidente, na votação nacional.
 export function majority(data, office, area) {
-  if (!data?.disclosed || (data.seats || office.seats) !== 1) return null;
+  if (!data?.disclosed || office.proportional || (data.seats || office.seats) !== 1) return null;
   if (office.code === 1 && area !== 'br') return null;
   const lead = data.candidates[0];
   if (!lead || lead.percent == null) return null;
@@ -133,11 +133,11 @@ export function observe(state) {
   try {
     const data = state.data;
     if (!data?.disclosed) return;
-    store.set('hist:' + state.key, addPoint(store.get('hist:' + state.key), data));
+    if (!state.office.proportional) store.set('hist:' + state.key, addPoint(store.get('hist:' + state.key), data));
     const prev = store.get('alerts:' + state.key);
     const progress = data.progress ?? 0;
     const { all, fresh } = newMarks(prev?.marks || [], progress, data.completed);
-    const sig = topSignature(data);
+    const sig = state.office.proportional ? '' : topSignature(data);
     const leadChanged = Boolean(prev?.sig && sig && sig !== prev.sig);
     const completed = Boolean(prev && fresh.includes(100));
     if (prev && alertsOn) {
@@ -156,7 +156,7 @@ export function observe(state) {
 export function decorate(state, body) {
   try {
     const data = state.data;
-    if (!data?.disclosed || !body) return;
+    if (!data?.disclosed || !body || state.office.proportional) return;
     const list = body.querySelector('.candidate-list');
     if (!list) return;
     const m = margin(data, state.office), maj = majority(data, state.office, state.area);
