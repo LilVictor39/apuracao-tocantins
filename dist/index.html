@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#121713">
+  <meta name="description" content="Seu painel pessoal das Eleições 2026. Acompanhe presidente, governador e senador do Tocantins com dados do TSE.">
+  <title>Apuração — Tocantins 2026</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#resultados">Ir para os resultados</a>
+  <header class="site-header wrap">
+    <a class="brand" href="./" aria-label="Apuração, página inicial"><img src="./favicon.svg" width="35" height="35" alt=""><span>apuração<span class="brand-dot">.</span></span></a>
+    <div class="header-edition">ELEIÇÕES <strong>2026</strong></div>
+    <a class="source-link" href="https://resultados.tse.jus.br/" target="_blank" rel="noopener noreferrer">Abrir TSE <span aria-hidden="true">↗</span></a>
+  </header>
+  <main class="wrap">
+    <section class="intro" aria-labelledby="page-title">
+      <div>
+        <div class="eyebrow"><span class="location-dot" aria-hidden="true"></span> TOCANTINS <span class="eyebrow-slash">/</span> SEU PAINEL PESSOAL</div>
+        <h1 id="page-title">Cada voto.<br><span>Mais perto do resultado.</span></h1>
+        <p class="intro-description">Presidente, governador e senador.<br class="mobile-break"> Acompanhe tudo em um só lugar.</p>
+      </div>
+      <div class="date-card"><span>DOMINGO</span><div>04<span>/10</span></div><p>1º turno <span>·</span> 2026</p></div>
+    </section>
+    <section class="connection-strip" aria-label="Conexão com o TSE">
+      <div class="connection-copy"><span id="connection-dot" class="status-dot" aria-hidden="true"></span><div><strong id="connection-title">Conectando ao TSE</strong><p id="connection-detail">Consultando os arquivos oficiais de resultados.</p></div></div>
+      <div class="source-tag"><span aria-hidden="true">↗</span> Fonte: Justiça Eleitoral</div>
+    </section>
+    <section id="resultados" class="results-section" aria-labelledby="results-title">
+      <div class="section-toolbar">
+        <div class="section-heading"><h2 id="results-title">Acompanhe a apuração</h2><span class="count-badge">3 cargos</span></div>
+        <div class="refresh-controls">
+          <label class="auto-control" for="auto-refresh"><span>Automático <small>30 s</small></span><input id="auto-refresh" type="checkbox" checked role="switch"><span class="switch-track" aria-hidden="true"></span></label>
+          <button id="refresh-button" class="refresh-button" type="button"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M6.1 7a7 7 0 0 1 11.55-1L20 9M4 15l2.35 3A7 7 0 0 0 17.9 17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Atualizar</span></button>
+        </div>
+      </div>
+      <div class="race-grid" id="race-grid"></div>
+      <p class="poll-note" id="poll-note">A atualização automática consulta os resultados a cada 30 segundos.</p>
+      <p id="announcer" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
+    </section>
+    <section class="guide" aria-label="Como acompanhar">
+      <div class="guide-heading"><span class="guide-icon" aria-hidden="true">i</span><h2>Enquanto os votos chegam</h2></div>
+      <div class="guide-grid">
+        <article><span class="guide-number">01</span><h3>Direto da fonte</h3><p>O painel consulta os arquivos públicos do TSE. O horário em cada cargo indica a última totalização informada pela fonte.</p></article>
+        <article><span class="guide-number">02</span><h3>Um retrato do momento</h3><p>Resultados parciais podem mudar. A situação de cada candidato só aparece quando informada pelo TSE.</p></article>
+        <article><span class="guide-number">03</span><h3>De olho no Senado</h3><p>São duas vagas para o Tocantins em 2026. Os percentuais exibidos são os publicados pelo TSE para cada candidatura.</p></article>
+      </div>
+    </section>
+    <noscript><div class="noscript">Ative o JavaScript para carregar os resultados ou <a href="https://resultados.tse.jus.br/">acompanhe diretamente no TSE</a>.</div></noscript>
+  </main>
+  <footer class="site-footer wrap"><p><strong>apuração.</strong> Feito para acompanhar de perto.</p><div><span>Painel pessoal independente</span><span class="footer-dot">·</span><a href="https://www.tse.jus.br/eleicoes/informacoes-tecnicas-sobre-a-divulgacao-de-resultados" target="_blank" rel="noopener noreferrer">Sobre os dados ↗</a></div></footer>
+</body>
+</html>
