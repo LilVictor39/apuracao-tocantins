@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node server.mjs",
     "dev": "node server.mjs",
+    "phone": "node server.mjs --lan",
     "test": "node --test"
   }
 }

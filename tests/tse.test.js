@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { OFFICES, resultUrl, normalize, number, retryDelay, fetchResult } from '../dist/tse.js';
+import { OFFICES, resultUrl, municipalUrl, normalize, number, retryDelay, fetchResult } from '../dist/tse.js';
 
 // Dados exclusivamente sintéticos, fora dos arquivos publicados do site.
 function fixture(office = OFFICES[0], region = office.region) {
@@ -20,6 +20,13 @@ test('endereços oficiais dos três cargos e recorte estadual', () => {
   assert.ok(resultUrl(OFFICES[1]).endsWith('/to/to-c0003-e006259-u.json'));
   assert.ok(resultUrl(OFFICES[2]).endsWith('/to/to-c0005-e006259-u.json'));
   assert.throws(() => resultUrl(OFFICES[1], 'br'));
+});
+test('arquivo municipal usa código TSE com cinco dígitos e valida a abrangência', () => {
+  assert.equal(municipalUrl(OFFICES[1], '73008'), 'https://resultados.tse.jus.br/oficial/ele2026/6259/dados/to/to73008-c0003-e006259-u.json');
+  assert.throws(() => municipalUrl(OFFICES[1], '123'));
+  const raw = { ...fixture(OFFICES[1]), tpabr: 'mu', cdabr: '73008' };
+  assert.equal(normalize(raw, OFFICES[1], 'to', '73008').candidates[0].votes, 750);
+  assert.throws(() => normalize({ ...raw, cdabr: '73009' }, OFFICES[1], 'to', '73008'));
 });
 test('EA20, vírgula decimal, candidatos e totais', () => {
   const data = normalize(fixture(), OFFICES[0]);

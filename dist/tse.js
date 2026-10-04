@@ -13,6 +13,11 @@ export function resultUrl(office, region = office.region) {
   return `${SOURCE}/oficial/ele2026/${office.election}/dados/${region}/${region}-c${String(office.code).padStart(4, '0')}-e${String(office.election).padStart(6, '0')}-u.json`;
 }
 
+export function municipalUrl(office, code) {
+  if (!OFFICES.includes(office) || !/^\d{5}$/.test(String(code))) throw new Error('Município ou cargo inválido.');
+  return `${SOURCE}/oficial/ele2026/${office.election}/dados/to/to${code}-c${String(office.code).padStart(4, '0')}-e${String(office.election).padStart(6, '0')}-u.json`;
+}
+
 export function number(value) {
   if (value == null || value === '') return null;
   if (typeof value !== 'number' && typeof value !== 'string') return null;
@@ -29,11 +34,14 @@ function stamp(date, time) {
   return /^\d{2}\/\d{2}\/2026$/.test(date || '') && /^\d{2}:\d{2}:\d{2}$/.test(time || '') ? `${date} às ${time}` : null;
 }
 
-export function normalize(raw, office, region = office.region) {
+export function normalize(raw, office, region = office.region, municipality = null) {
   if (!raw || raw.f !== 'o' || Number(raw.ele) !== office.election || String(raw.t) !== '1' || raw.sup !== 'n') {
     throw new Error('O arquivo não corresponde à eleição oficial de 2026, 1º turno.');
   }
-  if (String(raw.cdabr).toLowerCase() !== region || raw.tpabr !== (region === 'br' ? 'br' : 'uf')) {
+  const expectedArea = municipality == null ? region : String(municipality);
+  const expectedType = municipality == null ? (region === 'br' ? 'br' : 'uf') : 'mu';
+  if (municipality != null && (region !== 'to' || !/^\d{5}$/.test(expectedArea))) throw new Error('Município inválido.');
+  if (String(raw.cdabr).toLowerCase() !== expectedArea || raw.tpabr !== expectedType) {
     throw new Error('O arquivo recebido pertence a outra abrangência.');
   }
   const cargo = raw.carg?.find(item => Number(item.cd) === office.code);

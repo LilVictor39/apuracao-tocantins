@@ -2,6 +2,8 @@ import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import os from 'node:os';
+const lan = process.argv.includes('--lan');
 
 const root = fileURLToPath(new URL('./dist/', import.meta.url));
 const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml' };
@@ -17,4 +19,8 @@ const server = createServer(async (request, response) => {
     response.end(request.method === 'HEAD' ? undefined : content);
   } catch { response.writeHead(404).end('Arquivo nao encontrado'); }
 });
-server.listen(Number(process.env.PORT || 4173), '127.0.0.1', () => console.log('Local: http://127.0.0.1:' + server.address().port));
+server.listen(Number(process.env.PORT || 4173), lan ? '0.0.0.0' : '127.0.0.1', () => {
+  const port = server.address().port;
+  console.log('Local: http://127.0.0.1:' + port);
+  if (lan) for (const list of Object.values(os.networkInterfaces())) for (const i of list || []) if (i.family === 'IPv4' && !i.internal) console.log('Celular (mesmo Wi-Fi): http://' + i.address + ':' + port);
+});

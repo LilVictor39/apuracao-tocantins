@@ -2,29 +2,49 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#121713">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fff8ed" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#151a18" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Seu painel pessoal das Eleições 2026. Acompanhe presidente, governador e senador do Tocantins com dados do TSE.">
-  <title>Apuração — Tocantins 2026</title>
+  <title>Miaupuração — Tocantins 2026</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./cats.css">
+  <link rel="stylesheet" href="./mobile.css">
+  <link rel="stylesheet" href="./extras.css">
+  <link rel="stylesheet" href="./theme.css">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Miaupuração">
   <script type="module" src="./app.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#resultados">Ir para os resultados</a>
   <header class="site-header wrap">
-    <a class="brand" href="./" aria-label="Apuração, página inicial"><img src="./favicon.svg" width="35" height="35" alt=""><span>apuração<span class="brand-dot">.</span></span></a>
+    <a class="brand" href="./" aria-label="Miaupuração, página inicial"><span class="brand-cat" data-cat="ginger" aria-hidden="true"></span><span>miaupuração<span class="brand-dot">.</span></span></a>
     <div class="header-edition">ELEIÇÕES <strong>2026</strong></div>
     <a class="source-link" href="https://resultados.tse.jus.br/" target="_blank" rel="noopener noreferrer">Abrir TSE <span aria-hidden="true">↗</span></a>
   </header>
   <main class="wrap">
     <section class="intro" aria-labelledby="page-title">
       <div>
-        <div class="eyebrow"><span class="location-dot" aria-hidden="true"></span> TOCANTINS <span class="eyebrow-slash">/</span> SEU PAINEL PESSOAL</div>
-        <h1 id="page-title">Cada voto.<br><span>Mais perto do resultado.</span></h1>
-        <p class="intro-description">Presidente, governador e senador.<br class="mobile-break"> Acompanhe tudo em um só lugar.</p>
+        <div class="eyebrow"><span class="location-dot" aria-hidden="true"></span> TOCANTINS <span class="eyebrow-slash">/</span> PLANTÃO DOS GATINHOS</div>
+        <h1 id="page-title">De olho nos votos.<br><span>E no seu cursor.</span></h1>
+        <p class="intro-description">Presidente, governador e senador.<br>Uma apuração sob a supervisão de muitos bigodes.</p>
+        <div class="cat-controls"><button id="cat-toggle" class="cat-toggle" type="button" aria-pressed="true"><span class="tiny-paw" aria-hidden="true">✿</span><span id="cat-toggle-label">Olhinhos curiosos</span></button><span class="cat-hint">Mexa o mouse. Eles estão de olho!</span></div>
+        <p id="cat-reaction-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
       </div>
-      <div class="date-card"><span>DOMINGO</span><div>04<span>/10</span></div><p>1º turno <span>·</span> 2026</p></div>
+      <div class="cat-scene" aria-label="Quatro gatinhos curiosos acompanhando a apuração">
+        <span class="scene-spark spark-one" aria-hidden="true">✧</span><span class="scene-spark spark-two" aria-hidden="true">✧</span>
+        <span class="cat-speech" aria-hidden="true">alguém disse mouse?</span>
+        <span class="scene-cat scene-cat-one" data-cat="tuxedo" aria-hidden="true"></span>
+        <span class="scene-cat scene-cat-two" data-cat="ginger" aria-hidden="true"></span>
+        <span class="scene-cat scene-cat-three" data-cat="cream" aria-hidden="true"></span>
+        <span class="scene-cat scene-cat-four" data-cat="gray" aria-hidden="true"></span>
+        <div class="cat-box" aria-hidden="true"><span>COMISSÃO DOS BIGODES</span><strong>100% atentos.<br>0% imparciais com sachê.</strong><span class="box-paw">✿</span></div>
+        <div class="date-card"><span>DOMINGO</span><div>04<span>/10</span></div><p>1º turno <span>·</span> 2026</p></div>
+      </div>
     </section>
     <section class="connection-strip" aria-label="Conexão com o TSE">
       <div class="connection-copy"><span id="connection-dot" class="status-dot" aria-hidden="true"></span><div><strong id="connection-title">Conectando ao TSE</strong><p id="connection-detail">Consultando os arquivos oficiais de resultados.</p></div></div>
@@ -32,26 +52,42 @@
     </section>
     <section id="resultados" class="results-section" aria-labelledby="results-title">
       <div class="section-toolbar">
-        <div class="section-heading"><h2 id="results-title">Acompanhe a apuração</h2><span class="count-badge">3 cargos</span></div>
+        <div class="section-heading"><h2 id="results-title">A apuração, de patinha em patinha</h2><span class="count-badge">3 cargos</span></div>
         <div class="refresh-controls">
           <label class="auto-control" for="auto-refresh"><span>Automático <small>30 s</small></span><input id="auto-refresh" type="checkbox" checked role="switch"><span class="switch-track" aria-hidden="true"></span></label>
+          <button id="alert-button" class="refresh-button alert-button" type="button" aria-pressed="false"><span aria-hidden="true">🔔</span><span>Alertas</span></button>
           <button id="refresh-button" class="refresh-button" type="button"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M6.1 7a7 7 0 0 1 11.55-1L20 9M4 15l2.35 3A7 7 0 0 0 17.9 17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Atualizar</span></button>
         </div>
       </div>
+      <nav class="jump" aria-label="Ir para o cargo"><a href="#title-presidente">Presidente</a><a href="#title-governador">Governador</a><a href="#title-senador">Senador</a></nav>
       <div class="race-grid" id="race-grid"></div>
       <p class="poll-note" id="poll-note">A atualização automática consulta os resultados a cada 30 segundos.</p>
       <p id="announcer" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
     </section>
+    <details id="municipal-map" class="data-feature">
+      <summary><span>Mapa do Tocantins por município</span><small>Quem tem mais votos em cada cidade · abrir mapa</small></summary>
+      <div class="feature-body">
+        <p>Os dados municipais vêm dos arquivos oficiais do TSE. A cor indica o candidato mais votado em cada município até a última consulta; áreas sem votos permanecem neutras.</p>
+        <div class="map-controls"><label for="map-office">Cargo<select id="map-office"><option value="governador">Governador</option><option value="presidente">Presidente</option><option value="senador">Senador</option></select></label><label for="map-search">Buscar município<input id="map-search" type="search" placeholder="Ex.: Palmas"></label><button id="map-refresh" class="refresh-button" type="button">Atualizar mapa</button></div>
+        <p id="map-note" class="feature-note" role="status">Abra o mapa para consultar os municípios.</p>
+        <div id="map-legend" class="map-legend">Aguardando votos municipais.</div>
+        <div class="map-layout"><svg id="map-svg" viewBox="0 0 360 600" role="group" aria-label="Municípios do Tocantins"></svg><div class="map-side"><div id="map-detail" class="map-detail">Selecione um município no mapa ou na lista.</div><ul id="map-list" class="map-list"></ul></div></div>
+        <p class="feature-source">Municípios: <a href="https://www.tse.jus.br/eleicoes/informacoes-tecnicas-sobre-a-divulgacao-de-resultados" target="_blank" rel="noopener noreferrer">TSE</a>. Malha simplificada: <a href="https://servicodados.ibge.gov.br/api/docs/malhas?versao=3" target="_blank" rel="noopener noreferrer">IBGE</a>.</p>
+      </div>
+    </details>
+    <section id="history" class="data-feature" aria-labelledby="history-title">
+      <div class="feature-body"><h2 id="history-title">Presidente no Tocantins · 2022 × 2026</h2><div id="history-content"></div><p class="feature-source">2022: <a href="https://dadosabertos.tse.jus.br/dataset/resultados-2022" target="_blank" rel="noopener noreferrer">Dados Abertos do TSE</a> e <a href="https://legis.senado.leg.br/sdleg-getter/documento/download/f4c65065-2827-4b25-b3ae-cea632a47ef9" target="_blank" rel="noopener noreferrer">tabela histórica</a> · 2026: resultados atuais do TSE.</p></div>
+    </section>
     <section class="guide" aria-label="Como acompanhar">
       <div class="guide-heading"><span class="guide-icon" aria-hidden="true">i</span><h2>Enquanto os votos chegam</h2></div>
       <div class="guide-grid">
-        <article><span class="guide-number">01</span><h3>Direto da fonte</h3><p>O painel consulta os arquivos públicos do TSE. O horário em cada cargo indica a última totalização informada pela fonte.</p></article>
-        <article><span class="guide-number">02</span><h3>Um retrato do momento</h3><p>Resultados parciais podem mudar. A situação de cada candidato só aparece quando informada pelo TSE.</p></article>
-        <article><span class="guide-number">03</span><h3>De olho no Senado</h3><p>São duas vagas para o Tocantins em 2026. Os percentuais exibidos são os publicados pelo TSE para cada candidatura.</p></article>
+        <article><span class="guide-cat" data-cat="cream" aria-hidden="true"></span><span class="guide-number">01</span><h3>Fonte boa, bigodes tranquilos</h3><p>O painel consulta os arquivos públicos do TSE. O horário em cada cargo indica a última totalização informada pela fonte.</p></article>
+        <article><span class="guide-cat" data-cat="tuxedo" aria-hidden="true"></span><span class="guide-number">02</span><h3>Calma, gatinho. É parcial.</h3><p>Resultados parciais podem mudar. A situação de cada candidato só aparece quando informada pelo TSE.</p></article>
+        <article><span class="guide-cat" data-cat="calico" aria-hidden="true"></span><span class="guide-number">03</span><h3>Duas vagas, muitos olhinhos</h3><p>São duas vagas para o Tocantins em 2026. Os percentuais exibidos são os publicados pelo TSE para cada candidatura.</p></article>
       </div>
     </section>
     <noscript><div class="noscript">Ative o JavaScript para carregar os resultados ou <a href="https://resultados.tse.jus.br/">acompanhe diretamente no TSE</a>.</div></noscript>
   </main>
-  <footer class="site-footer wrap"><p><strong>apuração.</strong> Feito para acompanhar de perto.</p><div><span>Painel pessoal independente</span><span class="footer-dot">·</span><a href="https://www.tse.jus.br/eleicoes/informacoes-tecnicas-sobre-a-divulgacao-de-resultados" target="_blank" rel="noopener noreferrer">Sobre os dados ↗</a></div></footer>
+  <footer class="site-footer wrap"><div class="footer-kittens" aria-hidden="true"><span data-cat="ginger"></span><span data-cat="gray"></span></div><p><strong>miaupuração.</strong> Dados do TSE. Fiscalização felina.</p><div><span>Painel pessoal independente</span><span class="footer-dot">·</span><a href="https://www.tse.jus.br/eleicoes/informacoes-tecnicas-sobre-a-divulgacao-de-resultados" target="_blank" rel="noopener noreferrer">Sobre os dados ↗</a></div></footer>
 </body>
 </html>

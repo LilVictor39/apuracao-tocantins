@@ -1,4 +1,8 @@
 import { OFFICES, START, INTERVAL, fetchResult, normalize, resultUrl, retryDelay } from './tse.js';
+import { initCats, reactCats } from './cats.js';
+import { observe, decorate, initAlerts, alertsEnabled } from './extras.js';
+import { initMap } from './map.js';
+import { renderHistory } from './history.js';
 
 const $ = id => document.getElementById(id);
 const int = new Intl.NumberFormat('pt-BR');
@@ -17,8 +21,8 @@ let busy = false;
 let blockedUntil = Math.min(Number(memory.get('blockedUntil')) || 0, Date.now() + 600_000);
 const states = new Map();
 
-function stateFor(office) {
-  const area = office.code === 1 ? region : office.region;
+function stateFor(office, areaOverride = null) {
+  const area = areaOverride || (office.code === 1 ? region : office.region);
   const key = office.id + ':' + area;
   if (!states.has(key)) {
     const saved = memory.get(key);
@@ -88,6 +92,7 @@ function renderCard(office) {
     (data?.noWinner ? '<p class="race-note">O TSE informa totalização sem atribuição de eleitos. ' + esc(data.reasons.join(' · ')) + '</p>' : '') +
     (data && stale ? '<p class="race-note">Exibindo a última consulta recebida. Esses dados podem estar desatualizados.</p>' : '') +
     '<dl class="race-totals"><div><dt>Válidos</dt><dd>' + count(data?.valid) + '</dd></div><div><dt>Brancos</dt><dd>' + count(data?.blank) + '</dd></div><div><dt>Nulos</dt><dd>' + count(data?.nullVotes) + '</dd></div></dl>';
+  decorate(state, $('body-' + office.id));
   const sourceTime = data?.updated ? 'Totalização: ' + data.updated : data?.generated ? 'Arquivo: ' + data.generated : 'Horário do TSE ainda não recebido';
   $('footer-' + office.id).innerHTML = '<span class="timestamp">' + esc(sourceTime) + (data?.updated || data?.generated ? ' (Brasília)' : '') +
     '</span><a href="' + resultUrl(office, state.area) + '" target="_blank" rel="noopener noreferrer" aria-label="Arquivo oficial de ' + office.name + '">Fonte ↗</a>';
@@ -117,13 +122,13 @@ function tick() {
   $('refresh-button').disabled = busy || !navigator.onLine || remaining > 0;
   $('refresh-button').setAttribute('aria-busy', String(busy));
   document.querySelectorAll('[data-region]').forEach(button => { button.disabled = busy; });
-  $('poll-note').textContent = !navigator.onLine ? 'Sem conexão. Os horários exibidos pertencem à última consulta recebida.' : busy ? 'Consultando a fonte…' : !auto ? 'Atualização automática pausada. Use Atualizar para consultar novamente.' : document.hidden ? 'Consultas pausadas enquanto a aba está em segundo plano.' : remaining > 60 ? 'Nova tentativa em ' + Math.ceil(remaining / 60) + ' min. Intervalo ampliado por indisponibilidade da fonte.' : 'Próxima consulta em ' + remaining + ' s · atualização automática a cada 30 s.';
-  if (auto && !busy && !document.hidden && navigator.onLine && remaining === 0) void refresh();
+  $('poll-note').textContent = !navigator.onLine ? 'Sem conexão. Os horários exibidos pertencem à última consulta recebida.' : busy ? 'Consultando a fonte…' : !auto ? 'Atualização automática pausada. Use Atualizar para consultar novamente.' : document.hidden && !alertsEnabled() ? 'Consultas pausadas enquanto a aba está em segundo plano.' : remaining > 60 ? 'Nova tentativa em ' + Math.ceil(remaining / 60) + ' min. Intervalo ampliado por indisponibilidade da fonte.' : 'Próxima consulta em ' + remaining + ' s · atualização automática a cada 30 s.';
+  if (auto && !busy && (!document.hidden || alertsEnabled()) && navigator.onLine && remaining === 0) void refresh();
 }
 
 async function refresh() {
   if (busy || !navigator.onLine || Date.now() < blockedUntil) return;
-  const pending = OFFICES.map(stateFor).filter(state => state.next <= Date.now());
+  const pending = [...new Map([...OFFICES.map(office => stateFor(office)), stateFor(OFFICES[0], 'to')].map(state => [state.key, state])).values()].filter(state => state.next <= Date.now());
   if (!pending.length) return;
   busy = true; connection(); tick();
   for (const state of pending) {
@@ -133,6 +138,8 @@ async function refresh() {
       state.data = data; state.cached = false; state.error = null; state.failures = 0;
       state.checked = Date.now(); state.next = state.checked + INTERVAL;
       memory.set(state.key, { raw }); memory.set(state.key + ':retry', null);
+      const events = observe(state);
+      if (state.area === (state.office.code === 1 ? region : state.office.region)) reactCats(state.office, events);
     } catch (error) {
       state.failures += 1; state.error = error.status || 'network'; state.cached = Boolean(state.data);
       state.next = Date.now() + retryDelay(error.status, state.failures);
@@ -142,15 +149,23 @@ async function refresh() {
         OFFICES.forEach(office => { const paused = stateFor(office); if (paused.data) paused.cached = true; renderCard(office); });
       }
     }
-    renderCard(state.office); connection();
+    if (state.area === (state.office.code === 1 ? region : state.office.region)) renderCard(state.office);
+    if (state.office.code === 1 && state.area === 'to') renderHistory(state.data, state.cached);
+    mapUpdated(state.office);
+    connection();
   }
   busy = false; connection(); tick();
   $('announcer').textContent = $('connection-title').textContent;
 }
 
 OFFICES.forEach(makeCard);
+initCats();
 OFFICES.forEach(renderCard);
+const mapUpdated = initMap(stateFor);
+const historyState = stateFor(OFFICES[0], 'to');
+renderHistory(historyState.data, historyState.cached);
 $('auto-refresh').checked = auto;
+initAlerts();
 $('auto-refresh').addEventListener('change', event => { auto = event.target.checked; memory.set('auto', auto); tick(); });
 $('refresh-button').addEventListener('click', () => void refresh());
 document.querySelectorAll('[data-region]').forEach(button => button.addEventListener('click', () => {

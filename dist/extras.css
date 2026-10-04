@@ -1,0 +1,14 @@
+.insight{margin:12px 0 4px;padding:12px 14px;border:1px dashed #d9c6ad;border-radius:14px;background:#fff6e8;color:#5b4a3d;font-size:12px;line-height:1.5}
+.insight p{margin:0 0 8px}.insight b{color:#4d3930}.insight small{color:#7b6657}.insight-note{display:block;font-size:11px}
+.has-majority .candidate-bar{height:6px;position:relative}
+.has-majority .candidate-bar:after{content:'';position:absolute;left:50%;top:0;bottom:0;width:2px;margin-left:-1px;background:#bc542d}
+.evo{margin-top:18px;padding-top:14px;border-top:1px dashed #d9c6ad}.evo h4{margin:0 0 8px;font-size:13px;font-weight:600;color:#4d3930}
+.evo-svg{display:block;width:100%;height:auto}.evo-grid{stroke:#d9c6ad;stroke-width:1;stroke-dasharray:3 3}.evo-tick{font-size:9px;fill:#7b6657;font-variant-numeric:tabular-nums}
+.evo-legend{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:#5b4a3d}.evo-legend li{display:flex;align-items:center;gap:6px}.evo-legend i{width:10px;height:10px;border-radius:3px;display:block}
+.evo-note{margin:8px 0 0;font-size:11px;line-height:1.5;color:#7b6657}
+.alert-button[aria-pressed=true]{background:#fae7d5;border-color:#bc542d;color:#8a3b1c}
+.toasts{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));display:grid;gap:8px;z-index:50;pointer-events:none;max-width:440px;margin-inline:auto}
+.toast{pointer-events:auto;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:12px 14px;background:#3c332e;color:#fff8ed;border-radius:14px;box-shadow:0 12px 30px -10px #0006;font-size:14px;line-height:1.4}
+.toast strong{display:block;font-weight:600}.toast span{display:block;opacity:.9}
+.toast button{flex:none;min-width:36px;min-height:36px;border:0;background:#ffffff1f;color:inherit;border-radius:10px;font-size:20px;line-height:1}
+@media(max-width:760px){.insight{font-size:14px}.insight-note,.evo-note{font-size:12px}.evo-legend{font-size:13px}.evo-tick{font-size:10px}.refresh-controls{flex-wrap:wrap;gap:10px}.alert-button{min-height:44px;font-size:14px}}
