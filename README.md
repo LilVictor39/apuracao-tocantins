@@ -18,7 +18,7 @@ No computador, rode `npm run phone` (a partir da pasta `resultado` ou desta). O 
 
 ## Extras
 
-- **Tema claro/escuro:** acompanha automaticamente a preferência de aparência do celular ou computador.
+- **Tema claro/escuro:** o seletor no topo permite escolher Automático, Claro ou Escuro. A escolha fica salva neste navegador; Automático acompanha a preferência do celular ou computador.
 - **Mapa municipal:** ao abrir a seção, carrega a malha simplificada do IBGE e os 139 municípios do cadastro oficial EA12 do TSE. Depois que houver votos para o cargo selecionado, consulta os arquivos municipais EA20 gradualmente e colore cada área pelo candidato mais votado. Há busca, lista acessível e atualização manual; falhas e ausência de votos não são mostradas como liderança.
 - **Comparativo com 2022:** mostra os dois mais votados para Presidente no Tocantins no 1º turno de 2022 (Lula: 434.303 votos, 50,40%; Jair Bolsonaro: 379.194 votos, 44,00%) ao lado da parcial de 2026 no mesmo recorte. A diferença entre os dois primeiros é mostrada separadamente em cada eleição; candidaturas de anos diferentes não são tratadas como equivalentes. Fontes: [Dados Abertos do TSE](https://dadosabertos.tse.jus.br/dataset/resultados-2022) e [tabela histórica publicada no Senado](https://legis.senado.leg.br/sdleg-getter/documento/download/f4c65065-2827-4b25-b3ae-cea632a47ef9).
 - **Gatinhos reativos:** os gatos se assustam quando muda quem lidera um cargo e comemoram quando a totalização chega a 100%. A reação visual funciona mesmo com os alertas desligados e respeita a preferência por movimento reduzido. O primeiro dado recebido serve de referência e não dispara reação.
