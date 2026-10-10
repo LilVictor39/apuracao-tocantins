@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="116" viewBox="0 0 1280 116" role="img" aria-labelledby="title">
+  <title id="title">Miaupuração — dados do TSE, fiscalização felina</title>
+  <rect width="1280" height="116" rx="16" fill="#fff1df"/>
+  <rect y="24" width="6" height="68" rx="3" fill="#b95735"/>
+  <text x="40" y="75" font-family="DejaVu Sans, Arial, sans-serif" font-size="44" font-weight="700" letter-spacing="-2" fill="#b95735">miaupuração<tspan fill="#e7a966">.</tspan></text>
+  <path d="M389 34v48" stroke="#dec6aa" stroke-width="2"/>
+  <text x="425" y="69" font-family="Arial, sans-serif" font-size="23" fill="#554338">Dados do TSE. Fiscalização felina.</text>
+  <g transform="translate(1177 34)" fill="none" stroke="#b95735" stroke-width="5" stroke-linecap="round">
+    <circle cx="21" cy="36" r="10" fill="#b95735"/>
+    <circle cx="0" cy="13" r="5" fill="#b95735"/>
+    <circle cx="15" cy="3" r="5" fill="#b95735"/>
+    <circle cx="32" cy="3" r="5" fill="#b95735"/>
+    <circle cx="47" cy="13" r="5" fill="#b95735"/>
+  </g>
+</svg>

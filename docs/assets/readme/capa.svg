@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="520" viewBox="0 0 1280 520" role="img" aria-labelledby="title desc">
+  <title id="title">Miaupuração — de olho nos votos e no seu cursor</title>
+  <desc id="desc">Capa em tons de creme e terracota. À esquerda, o nome do painel; à direita, um gatinho acompanha uma urna e a bandeira do Tocantins.</desc>
+  <defs>
+    <clipPath id="card"><rect width="1280" height="520" rx="24"/></clipPath>
+    <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#dfc9ac" opacity=".55"/></pattern>
+  </defs>
+  <g clip-path="url(#card)">
+    <rect width="1280" height="520" fill="#fff8ed"/>
+    <rect width="1280" height="444" fill="url(#dots)"/>
+    <circle cx="1045" cy="203" r="169" fill="#f4e8d4"/>
+    <path d="M766 54v342" stroke="#e0d1bc" stroke-width="2"/>
+    <rect x="60" y="65" width="27" height="7" rx="3.5" fill="#b95735"/>
+    <text x="103" y="73" font-family="Arial, sans-serif" font-size="17" font-weight="700" letter-spacing="2.2" fill="#956b50">ELEIÇÕES 2026 · TOCANTINS EM DESTAQUE</text>
+    <text x="55" y="225" font-family="DejaVu Sans, Arial, sans-serif" font-size="83" font-weight="700" letter-spacing="-5" fill="#b95735">miaupuração<tspan fill="#e7a966">.</tspan></text>
+    <text x="62" y="294" font-family="Arial, sans-serif" font-size="32" font-weight="700" fill="#3c332e">De olho nos votos.</text>
+    <text x="62" y="338" font-family="Arial, sans-serif" font-size="32" font-weight="700" fill="#3c332e">E no seu cursor.</text>
+    <text x="63" y="390" font-family="Arial, sans-serif" font-size="18" fill="#76685f">Brasil inteiro no mapa. Tocantins sempre por perto.</text>
+
+    <g transform="translate(837 51)">
+      <rect x="48" y="229" width="286" height="114" rx="21" fill="#725d7c" stroke="#4e4255" stroke-width="4"/>
+      <rect x="62" y="242" width="258" height="86" rx="13" fill="#e2d6e9"/>
+      <path d="M133 228v-32h117v32" fill="#eee2d0" stroke="#735e52" stroke-width="4"/>
+      <path d="M167 204h50" stroke="#735e52" stroke-width="5" stroke-linecap="round"/>
+      <text x="191" y="288" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="2" fill="#65566b">COMISSÃO DOS BIGODES</text>
+      <path d="M106 107 98 29l66 49q33-17 66 0l66-49-8 78q35 50 5 91-29 39-96 41-67-2-96-41-30-41 5-91Z" fill="#e9a464" stroke="#4b3a32" stroke-width="5" stroke-linejoin="round"/>
+      <path d="m112 97-5-49 42 36M281 97l5-49-42 36" fill="#f4c79e" stroke="#4b3a32" stroke-width="3"/>
+      <ellipse cx="151" cy="147" rx="27" ry="34" fill="#fffaf1"/>
+      <ellipse cx="242" cy="147" rx="27" ry="34" fill="#fffaf1"/>
+      <ellipse cx="159" cy="151" rx="8" ry="17" fill="#49352f"/>
+      <ellipse cx="234" cy="151" rx="8" ry="17" fill="#49352f"/>
+      <path d="m182 181 14 9 14-9-14-5Z" fill="#ae6d75"/>
+      <path d="M196 190v11m0 0q-14 12-28 0m28 0q14 12 28 0" fill="none" stroke="#4b3a32" stroke-width="3" stroke-linecap="round"/>
+      <path d="m130 186-39-8m40 16-42 3m172-11 39-8m-40 16 42 3" stroke="#4b3a32" stroke-width="3" stroke-linecap="round"/>
+      <ellipse cx="133" cy="239" rx="29" ry="17" fill="#e9a464" stroke="#4b3a32" stroke-width="4"/>
+      <ellipse cx="257" cy="239" rx="29" ry="17" fill="#e9a464" stroke="#4b3a32" stroke-width="4"/>
+      <path d="M121 231v15m13-15v15m111-15v15m13-15v15" stroke="#4b3a32" stroke-width="2"/>
+      <g transform="translate(9 241)">
+        <rect width="49" height="35" rx="3" fill="#fff" stroke="#8a7a64" stroke-width="1"/>
+        <path d="M0 0h32L0 24" fill="#1946b4"/>
+        <path d="M17 35h32V11" fill="#ff9600"/>
+        <circle cx="25" cy="18" r="6" fill="#ff9600"/>
+      </g>
+    </g>
+    <rect y="444" width="1280" height="76" fill="#3c332e"/>
+    <circle cx="65" cy="482" r="5" fill="#f3b47c"/>
+    <text x="83" y="488" font-family="Arial, sans-serif" font-size="16" font-weight="700" letter-spacing="1.1" fill="#fff8ed">PRESIDENTE · BRASIL E ESTADOS</text>
+    <text x="663" y="488" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" letter-spacing="1" fill="#e8cfb6">GOVERNADOR · TOCANTINS</text>
+    <path d="M960 466v32" stroke="#76685f"/>
+    <text x="1218" y="488" text-anchor="end" font-family="Arial, sans-serif" font-size="16" letter-spacing="1.2" fill="#fff8ed">DADOS DO TSE</text>
+  </g>
+</svg>

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="170" height="32" viewBox="0 0 170 32" role="img" aria-label="Presidente: 27 unidades da federação">
+  <title>Presidente: 27 UFs</title><defs><clipPath id="pill"><rect width="170" height="32" rx="8"/></clipPath></defs>
+  <g clip-path="url(#pill)"><rect width="170" height="32" fill="#fff1df"/><rect x="95" width="75" height="32" fill="#397a9d"/></g>
+  <g font-family="Arial, sans-serif" font-size="11" font-weight="700" text-anchor="middle" dominant-baseline="central"><text x="47" y="16" fill="#704832">PRESIDENTE</text><text x="132" y="16" fill="#fff">27 UFs</text></g>
+</svg>
