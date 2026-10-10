@@ -9,8 +9,9 @@
     const dark = mode === 'dark' || (mode === 'auto' && system.matches);
     document.documentElement.dataset.theme = dark ? 'dark' : 'light';
     document.querySelector('meta[name="theme-color"]').content = dark ? '#151a18' : '#fff8ed';
-    const select = document.getElementById('theme-select');
-    if (select) select.value = mode;
+    document.querySelectorAll('[data-theme-choice]').forEach(button => {
+      button.setAttribute('aria-pressed', String(button.dataset.themeChoice === mode));
+    });
   }
 
   apply();
@@ -21,13 +22,11 @@
     apply();
   });
   document.addEventListener('DOMContentLoaded', () => {
-    const select = document.getElementById('theme-select');
-    if (!select) return;
-    select.value = mode;
-    select.addEventListener('change', () => {
-      mode = allowed.has(select.value) ? select.value : 'auto';
+    apply();
+    document.querySelectorAll('[data-theme-choice]').forEach(button => button.addEventListener('click', () => {
+      mode = button.dataset.themeChoice;
       try { localStorage.setItem(key, mode); } catch { /* escolha vale nesta página */ }
       apply();
-    });
+    }));
   });
 })();
