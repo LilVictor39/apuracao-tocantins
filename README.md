@@ -1,6 +1,6 @@
 # Apuração · Tocantins 2026
 
-Painel pessoal de presidente (Brasil ou Tocantins), governador, senador e deputado estadual (Tocantins), para o **1º turno de 4 de outubro de 2026**. HTML, CSS e JavaScript; sem dependências de execução, cadastro ou chave de API.
+Painel pessoal das Eleições 2026. O **2º turno de 25 de outubro** mostra Presidente no Brasil e nas 27 unidades da federação, com Tocantins em destaque, além de Governador do Tocantins. O **1º turno de 4 de outubro** continua disponível com Presidente, Governador, Senador e Deputado Estadual. HTML, CSS e JavaScript; sem dependências de execução, cadastro ou chave de API.
 
 ## Usar no computador
 
@@ -19,7 +19,8 @@ No computador, rode `npm run phone` (a partir da pasta `resultado` ou desta). O 
 ## Extras
 
 - **Tema claro/escuro:** o seletor no topo permite escolher Automático, Claro ou Escuro. A escolha fica salva neste navegador; Automático acompanha a preferência do celular ou computador.
-- **Mapa municipal:** ao abrir a seção, carrega a malha simplificada do IBGE e os 139 municípios do cadastro oficial EA12 do TSE. Depois que houver votos para o cargo selecionado, consulta os arquivos municipais EA20 gradualmente e colore cada área pelo candidato mais votado. Há busca, lista acessível e atualização manual; falhas e ausência de votos não são mostradas como liderança.
+- **Mapa municipal:** acompanha o turno selecionado. Ao abrir a seção, carrega a malha simplificada do IBGE e os 139 municípios do cadastro oficial EA12 do TSE. Depois que houver votos para o cargo selecionado, consulta os arquivos municipais EA20 gradualmente e colore cada área pelo candidato mais votado. Há busca, lista acessível e atualização manual; falhas e ausência de votos não são mostradas como liderança.
+- **Brasil por estado:** a votação presidencial de Tocantins fica destacada no painel. A seção dos estados mostra as 27 unidades da federação, com as duas candidaturas, votos, percentuais e avanço da totalização. Os outros 26 estados são consultados somente quando a seção é aberta, um de cada vez, e no máximo a cada cinco minutos enquanto ela permanece aberta; resultados finais são preservados no navegador. Não há consultas aos arquivos do 2º turno antes de 25 de outubro, às 17h de Brasília.
 - **Comparativo com 2022:** mostra os dois mais votados para Presidente no Tocantins no 1º turno de 2022 (Lula: 434.303 votos, 50,40%; Jair Bolsonaro: 379.194 votos, 44,00%) ao lado da parcial de 2026 no mesmo recorte. A diferença entre os dois primeiros é mostrada separadamente em cada eleição; candidaturas de anos diferentes não são tratadas como equivalentes. Fontes: [Dados Abertos do TSE](https://dadosabertos.tse.jus.br/dataset/resultados-2022) e [tabela histórica publicada no Senado](https://legis.senado.leg.br/sdleg-getter/documento/download/f4c65065-2827-4b25-b3ae-cea632a47ef9).
 - **Gatinhos reativos:** os gatos se assustam quando muda quem lidera um cargo e comemoram quando a totalização chega a 100%. A reação visual funciona mesmo com os alertas desligados e respeita a preferência por movimento reduzido. O primeiro dado recebido serve de referência e não dispara reação.
 - **Margem:** diferença em votos e p.p. entre 1º e 2º (no Senado, entre quem ocupa a última vaga e o primeiro fora dela).
@@ -27,19 +28,21 @@ No computador, rode `npm run phone` (a partir da pasta `resultado` ou desta). O 
 - **Evolução:** gráfico dos percentuais a cada totalização, registrado pelo navegador (localStorage) enquanto o painel está aberto. Não é série oficial do TSE.
 - **Alertas** (botão no topo da lista): aviso sonoro, na tela e, quando permitido, notificação do sistema nos marcos de 50%, 90% e 100% das seções e quando muda quem lidera (só a partir de 10% das seções, para evitar ruído). Com alertas ligados o painel continua consultando em segundo plano e tenta manter a tela acesa; no celular, bloquear a tela ou fechar o navegador interrompe as consultas. O primeiro dado recebido serve só de referência e não gera alerta.
 - **Deputado estadual:** mostra os mais votados durante a parcial e destaca as candidaturas marcadas como eleitas pelo TSE na totalização. A lista completa fica em “Ver outras candidaturas”. A eleição é proporcional; a ordem geral de votos não determina sozinha as 24 vagas. Para esse cargo, os alertas cobrem os marcos de totalização, sem avisos de mudança de liderança ou margem da última vaga.
+- **Turnos separados:** o seletor mantém os resultados, alertas e histórico local de cada turno isolados. Antes do encerramento da votação em 25 de outubro, o painel do 2º turno mostra apenas as candidaturas confirmadas pelo TSE, sem votos fictícios nem consultas repetidas a arquivos ainda indisponíveis.
 
 ## Dados e comportamento
 
 - Fonte: [documentação técnica do TSE](https://www.tse.jus.br/eleicoes/informacoes-tecnicas-sobre-a-divulgacao-de-resultados), formato EA20.
-- Eleições 6257 (federal) e 6259 (estadual), ambiente oficial, ciclo ele2026, cargos 0001, 0003, 0005 e 0007.
+- 1º turno: eleições 6257 (federal) e 6259 (estadual), cargos 0001, 0003, 0005 e 0007. 2º turno: eleições 6258 (federal) e 6260 (estadual), cargos 0001 e 0003. Ambiente oficial e ciclo ele2026.
 - Consultas diretas pelo navegador a cada 30 segundos; pausadas em abas em segundo plano ou pelo controle Automático.
 - HTTP 404 e formato inesperado: pausa de cinco minutos; 403/429: pausa global mínima de dez minutos. Erros de rede têm espera crescente.
 - O armazenamento local conserva a última resposta válida e a preferência de abrangência. Resultados restaurados ou sem atualização recebem aviso de consulta anterior.
+- O painel consulta os arquivos públicos distribuídos pela CDN do TSE. Para este site pessoal, o carregamento sob demanda e o cache local evitam a necessidade de um banco Supabase; um banco exigiria um serviço de ingestão, sincronização e controle de atualização sem acelerar a publicação dos dados na fonte.
 - Dados simulados, outra eleição, outro turno ou outra abrangência são recusados. Não existem resultados fictícios no site. Os dados sintéticos dos testes ficam fora de `dist/`.
 - Situações eleitorais vêm do campo `st` do TSE; `e=s` sozinho não significa eleito. O recorte de presidente no Tocantins não declara resultado nacional.
 - Percentuais dos candidatos são os publicados pela fonte; votos anulados e sub judice mantêm a destinação indicada. Seções totalizadas não são sinônimo de eleitores ou votos apurados.
 - A totalização e a geração do arquivo têm horários próprios, separados do horário da consulta. Indisponibilidade da fonte não é apresentada como zero votos.
-- Este painel cobre o primeiro turno. Um segundo turno exige reconfigurar os códigos e validar os arquivos correspondentes.
+- O comparativo com 2022 usa somente o 1º turno de Presidente no Tocantins, mesmo quando a aba do 2º turno está aberta.
 
 ## Verificação
 

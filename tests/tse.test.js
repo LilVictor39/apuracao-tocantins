@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { OFFICES, resultUrl, municipalUrl, normalize, number, retryDelay, fetchResult } from '../dist/tse.js';
+import { OFFICES, SECOND_ROUND_OFFICES, SECOND_ROUND_START, STATES, resultUrl, municipalUrl, normalize, number, resultWindowOpen, retryDelay, fetchResult } from '../dist/tse.js';
 
 // Dados exclusivamente sintéticos, fora dos arquivos publicados do site.
 function fixture(office = OFFICES[0], region = office.region) {
   return {
-    ele: String(office.election), t: '1', f: 'o', sup: 'n', tpabr: region === 'br' ? 'br' : 'uf', cdabr: region,
+    ele: String(office.election), t: String(office.turn || 1), f: 'o', sup: 'n', tpabr: region === 'br' ? 'br' : 'uf', cdabr: region,
     dg: '04/10/2026', hg: '18:01:00', dt: '04/10/2026', ht: '18:00:00', idg: '100', and: 'p', tf: 'n', dv: 's',
     carg: [{ cd: String(office.code), nv: String(office.seats), agr: [{ par: [{ sg: 'TESTE', cand: [
       { n: '90', sqcand: '1', nmu: 'Teste A', vap: '750', pvap: '75,00', seq: '2', e: 's', st: '', dvt: 'Válido' },
@@ -21,6 +21,37 @@ test('endereços oficiais dos quatro cargos e recorte estadual', () => {
   assert.ok(resultUrl(OFFICES[2]).endsWith('/to/to-c0005-e006259-u.json'));
   assert.ok(resultUrl(OFFICES[3]).endsWith('/to/to-c0007-e006259-u.json'));
   assert.throws(() => resultUrl(OFFICES[1], 'br'));
+});
+test('2º turno usa eleições próprias e recusa arquivo do 1º turno', () => {
+  const [president, governor] = SECOND_ROUND_OFFICES;
+  assert.equal(SECOND_ROUND_START, Date.parse('2026-10-25T17:00:00-03:00'));
+  assert.equal(resultWindowOpen(governor, SECOND_ROUND_START - 1), false);
+  assert.equal(resultWindowOpen(governor, SECOND_ROUND_START), true);
+  assert.equal(resultWindowOpen(OFFICES[1], SECOND_ROUND_START - 1), true);
+  assert.ok(resultUrl(president).endsWith('/br/br-c0001-e006258-u.json'));
+  assert.ok(resultUrl(president, 'to').endsWith('/to/to-c0001-e006258-u.json'));
+  assert.ok(resultUrl(governor).endsWith('/to/to-c0003-e006260-u.json'));
+  assert.ok(municipalUrl(governor, '73008').endsWith('/to/to73008-c0003-e006260-u.json'));
+  assert.equal(normalize(fixture(governor), governor).candidates[0].votes, 750);
+  assert.throws(() => normalize({ ...fixture(governor), t: '1' }, governor));
+  assert.throws(() => normalize({ ...fixture(governor), ele: '6259' }, governor));
+  assert.throws(() => normalize(fixture(OFFICES[1]), governor));
+  const regional = fixture(president, 'to');
+  regional.carg[0].agr[0].par[0].cand[0].st = 'Eleito';
+  assert.equal(normalize(regional, president, 'to').candidates[0].status, '');
+});
+test('Presidente no 2º turno aceita as 27 UFs e valida o recorte de cada arquivo', () => {
+  const president = SECOND_ROUND_OFFICES[0];
+  assert.equal(STATES.length, 27);
+  assert.equal(new Set(STATES.map(([code]) => code)).size, 27);
+  assert.ok(STATES.some(([code]) => code === 'to'));
+  for (const [code] of STATES) {
+    assert.ok(resultUrl(president, code).endsWith(`/${code}/${code}-c0001-e006258-u.json`));
+    assert.equal(normalize(fixture(president, code), president, code).candidates[0].votes, 750);
+  }
+  assert.throws(() => resultUrl(president, 'xx'));
+  assert.throws(() => resultUrl(SECOND_ROUND_OFFICES[1], 'sp'));
+  assert.throws(() => normalize(fixture(president, 'sp'), president, 'to'));
 });
 test('deputado estadual usa resultado proporcional e situação oficial de cada candidatura', () => {
   const office = OFFICES[3];

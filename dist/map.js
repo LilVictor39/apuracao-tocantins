@@ -1,4 +1,4 @@
-import { OFFICES, municipalUrl, normalize } from './tse.js';
+import { OFFICES, SECOND_ROUND_OFFICES, municipalUrl, normalize } from './tse.js';
 
 const $ = id => document.getElementById(id);
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
@@ -34,11 +34,12 @@ export function mapPaths(features, width = 360, height = 600) {
   return features.map(feature => ({ ibge: String(feature.properties.codarea), d: geometryPath(feature.geometry, project) }));
 }
 
-export function initMap(getState) {
+export function initMap(getState, getOffices = () => OFFICES) {
   const section = $('municipal-map');
-  if (!section) return () => {};
-  let municipalities = [], shapes = [], selectedOffice = OFFICES[1], selectedCode = null, runId = 0, busy = false, cooldown = 0;
-  const results = new Map(OFFICES.map(office => [office.id, new Map()]));
+  if (!section) return { updated() {}, setOffices() {} };
+  const officeKey = office => (office.turn || 1) + ':' + office.id;
+  let municipalities = [], shapes = [], selectedOffice = getOffices()[1] || getOffices()[0], selectedCode = null, runId = 0, busy = false, cooldown = 0;
+  const results = new Map([...OFFICES, ...SECOND_ROUND_OFFICES].map(office => [officeKey(office), new Map()]));
   const loaded = new Set(), lastLoad = new Map();
   const selector = $('map-office'), search = $('map-search'), note = $('map-note'), detail = $('map-detail');
   const svg = $('map-svg'), list = $('map-list'), legend = $('map-legend');
@@ -52,7 +53,7 @@ export function initMap(getState) {
   }
 
   function paint() {
-    const current = results.get(selectedOffice.id);
+    const current = results.get(officeKey(selectedOffice));
     const byIbge = new Map(municipalities.map(m => [m.ibge, m]));
     svg.innerHTML = shapes.map(shape => {
       const city = byIbge.get(shape.ibge);
@@ -83,9 +84,20 @@ export function initMap(getState) {
   search.addEventListener('input', paint);
   selector.addEventListener('change', () => {
     runId += 1; busy = false;
-    selectedOffice = OFFICES.find(office => office.id === selector.value) || OFFICES[1];
-    selectedCode = null; paint(); maybeLoad();
+    selectedOffice = getOffices().find(office => office.id === selector.value) || getOffices()[0];
+    selectedCode = null; note.textContent = 'Carregando os dados de ' + selectedOffice.name + ' · ' + (selectedOffice.turn || 1) + 'º turno.'; paint(); maybeLoad();
   });
+
+  function setOffices(offices) {
+    runId += 1; busy = false;
+    selectedOffice = offices.find(office => office.id === 'governador') || offices[0];
+    selector.innerHTML = offices.filter(office => !office.proportional).map(office => `<option value="${office.id}">${escapeHtml(office.name)}</option>`).join('');
+    selector.value = selectedOffice.id;
+    selectedCode = null;
+    note.textContent = 'Mapa do ' + (selectedOffice.turn || 1) + 'º turno. Abra para consultar os municípios.';
+    if (municipalities.length) { paint(); maybeLoad(); }
+  }
+  setOffices(getOffices());
 
   async function prepare() {
     try {
@@ -102,9 +114,9 @@ export function initMap(getState) {
   async function loadVotes(force = false) {
     if (busy || !municipalities.length || Date.now() < cooldown) return;
     if (!getState(selectedOffice)?.data?.disclosed) { note.textContent = 'Aguardando a divulgação dos votos deste cargo pelo TSE.'; return; }
-    if (!force && loaded.has(selectedOffice.id) && Date.now() - (lastLoad.get(selectedOffice.id) || 0) < 300_000) return;
+    if (!force && loaded.has(officeKey(selectedOffice)) && Date.now() - (lastLoad.get(officeKey(selectedOffice)) || 0) < 300_000) { note.textContent = 'Mapa atualizado anteriormente. Use Atualizar mapa para uma nova consulta.'; return; }
     busy = true;
-    const office = selectedOffice, id = ++runId, current = results.get(office.id);
+    const office = selectedOffice, id = ++runId, current = results.get(officeKey(office));
     let done = 0;
     note.textContent = 'Consultando municípios no TSE: 0 de ' + municipalities.length + '.';
     for (const city of municipalities) {
@@ -127,7 +139,7 @@ export function initMap(getState) {
       if (done < municipalities.length) await new Promise(resolve => setTimeout(resolve, 250));
     }
     if (id !== runId) return;
-    busy = false; loaded.add(office.id); lastLoad.set(office.id, Date.now());
+    busy = false; loaded.add(officeKey(office)); lastLoad.set(officeKey(office), Date.now());
     note.textContent = 'Mapa atualizado com ' + done + ' municípios. Cores indicam quem tem mais votos em cada cidade; os resultados podem ser parciais.';
   }
 
@@ -139,5 +151,5 @@ export function initMap(getState) {
   }
   section.addEventListener('toggle', () => { if (section.open && !municipalities.length) void prepare(); else maybeLoad(); });
   $('map-refresh').addEventListener('click', () => { if (Date.now() < cooldown) { note.textContent = 'A fonte pediu uma pausa. Tente novamente em alguns minutos.'; return; } void loadVotes(true); });
-  return office => { if (section.open && office.id === selectedOffice.id) maybeLoad(); };
+  return { updated: office => { if (section.open && officeKey(office) === officeKey(selectedOffice)) maybeLoad(); }, setOffices };
 }

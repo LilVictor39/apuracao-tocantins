@@ -24,6 +24,20 @@ function catSvg(kind) {
 }
 
 let reactionTimer;
+let rescanCats = null;
+
+export function refreshCardCats() {
+  document.querySelectorAll('.race-card').forEach((card, index) => {
+    if (card.querySelector('.card-cat')) return;
+    const kitten = document.createElement('span');
+    kitten.className = 'card-cat';
+    kitten.dataset.cat = ['ginger', 'tuxedo', 'gray'][index % 3];
+    kitten.setAttribute('aria-hidden', 'true');
+    card.prepend(kitten);
+  });
+  document.querySelectorAll('[data-cat]').forEach(host => { if (!host.querySelector('.cat-art')) host.innerHTML = catSvg(host.dataset.cat); });
+  rescanCats?.();
+}
 
 export function reactCats(office, events) {
   if (!events?.leadChanged && !events?.completed) return;
@@ -53,18 +67,12 @@ export function initCats() {
   const button = document.getElementById('cat-toggle');
   if (!button || button.dataset.ready) return;
   button.dataset.ready = 'true';
-  document.querySelectorAll('.race-card').forEach((card, index) => {
-    const kitten = document.createElement('span');
-    kitten.className = 'card-cat';
-    kitten.dataset.cat = ['ginger', 'tuxedo', 'gray'][index % 3];
-    kitten.setAttribute('aria-hidden', 'true');
-    card.prepend(kitten);
-  });
-  document.querySelectorAll('[data-cat]').forEach(host => { host.innerHTML = catSvg(host.dataset.cat); });
-  const cats = [...document.querySelectorAll('.cat-art')].map(svg => ({
+  let cats = [];
+  rescanCats = () => { cats = [...document.querySelectorAll('.cat-art')].map(svg => ({
     svg,
     eyes: [...svg.querySelectorAll('.cat-eye')].map(eye => ({ x: Number(eye.dataset.eyeX), y: Number(eye.dataset.eyeY), pupil: eye.querySelector('.cat-pupil') })),
-  }));
+  })); };
+  refreshCardCats();
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   let preference = null;
   try { preference = JSON.parse(localStorage.getItem('apuracao2026:cat-eyes')); } catch { /* Preferências são opcionais. */ }

@@ -67,7 +67,17 @@ html[data-theme="dark"] .jump,html[data-theme="dark"] .site-header{background:#1
 
 /* Quatro disputas lado a lado no computador, sem apertar os cartões no celular. */
 .race-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.round-switch{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 24px}
+.round-switch button{min-height:42px;padding:9px 16px;border:1px solid var(--line);border-radius:99px;background:var(--panel);color:var(--text);font-size:13px;font-weight:600}
+.round-switch button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#24301e}
+.round-switch button:not([aria-pressed="true"]):hover{background:var(--bg)}
+html[data-theme="dark"] .round-switch button[aria-pressed="true"]{color:#1d291b}
+.runoff-matchup{display:grid;gap:5px;margin-top:16px;padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:var(--bg);line-height:1.5}
+.runoff-matchup strong{font-size:10px;color:var(--muted)}
+.runoff-matchup span{font-size:12px;font-weight:600;color:var(--text)}
+.runoff-matchup a{margin-top:3px}
 @media(min-width:1250px){.race-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}.race-head{padding-left:18px;padding-right:18px}.race-body{padding-left:18px;padding-right:18px}.race-footer{padding-left:18px;padding-right:18px}.candidate-main{gap:8px}.candidate-score strong{font-size:15px}}
+.race-grid.two-offices{grid-template-columns:repeat(2,minmax(0,1fr));max-width:1000px;margin-left:auto;margin-right:auto}
 .candidate-group-title{font-size:13px;font-weight:600;margin:20px 0 3px;color:var(--text)}
 .candidate-more{margin-top:12px;border-top:1px solid var(--line)}
 .candidate-more summary{cursor:pointer;padding:13px 0;color:var(--accent);font-size:12px;font-weight:600}
@@ -77,5 +87,24 @@ html[data-theme="dark"] .jump,html[data-theme="dark"] .site-header{background:#1
 .race-card:nth-child(4) .seats{color:#496a70;border-color:#c6d9dc}
 html[data-theme="dark"] .race-card:nth-child(4) .race-head{background:#253638}
 html[data-theme="dark"] .race-card:nth-child(4) .seats{color:#c0dce0;border-color:#45636a}
-@media(max-width:760px){.race-grid{grid-template-columns:1fr}}
+@media(max-width:760px){.race-grid,.race-grid.two-offices{grid-template-columns:1fr}}
 html[data-theme="dark"] .toast{background:#efe3d1;color:#242c24}
+
+.tocantins-spotlight{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,1fr);align-items:center;gap:22px;margin-top:24px;padding:22px 26px;border:2px solid var(--accent);border-radius:19px;background:var(--panel);box-shadow:var(--shadow)}
+.state-eyebrow{font-size:10px;font-weight:700;letter-spacing:1.3px;color:var(--accent)}
+.tocantins-spotlight h2{margin:7px 0 5px;font-family:Fredoka,sans-serif;font-size:24px;font-weight:400}
+.tocantins-spotlight>div>p{margin:0;color:var(--muted);font-size:12px;line-height:1.6}
+.state-highlight-result{padding-left:22px;border-left:1px solid var(--line)}
+.states-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.states-toolbar p{margin:0;color:var(--muted);font-size:12px}
+.states-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0;padding:0;list-style:none}
+.state-card{min-width:0;padding:15px;border:1px solid var(--line);border-radius:13px;background:var(--bg)}
+.state-card-to{border:2px solid var(--accent);background:var(--panel)}
+.state-card-head{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.state-card-head strong{font-size:14px}.state-card-head span{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase}
+.state-empty{margin:12px 0 0;color:var(--muted);font-size:12px;line-height:1.5}
+.state-leader{margin:11px 0 8px;font-size:12px;font-weight:600;color:var(--text)}
+.state-candidates{display:grid;gap:6px}.state-candidates>div{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1px 8px;font-size:12px}.state-candidates span{overflow-wrap:anywhere}.state-candidates strong{font-variant-numeric:tabular-nums}.state-candidates small{grid-column:1/-1;color:var(--muted);font-size:10px}
+.state-meta{margin:10px 0 0;color:var(--muted);font-size:10px;line-height:1.5}
+@media(max-width:1050px){.states-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.tocantins-spotlight{grid-template-columns:1fr;padding:18px;gap:14px}.state-highlight-result{padding:14px 0 0;border-left:0;border-top:1px solid var(--line)}.states-toolbar{align-items:flex-start;flex-direction:column}.states-grid{grid-template-columns:1fr}}

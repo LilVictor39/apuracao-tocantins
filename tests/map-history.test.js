@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { municipalityResult, mapPaths } from '../dist/map.js';
 import { comparison } from '../dist/history.js';
+import { regionSummary } from '../dist/brasil.js';
 
 test('mapa oficial associa as 139 áreas do IBGE aos municípios do TSE', () => {
   const cities = JSON.parse(readFileSync(new URL('../dist/to-municipios.json', import.meta.url))).municipalities;
@@ -27,4 +28,13 @@ test('comparativo usa só Presidente no Tocantins e não inventa parcial', () =>
   assert.equal(comparison({ disclosed: false }).current, null);
   const current = comparison({ disclosed: true, candidates: [{ votes: 100 }, { votes: 90 }] });
   assert.equal(current.currentMargin, 10);
+});
+
+test('resumo estadual não inventa líder sem votos e sinaliza empate ou consulta anterior', () => {
+  assert.equal(regionSummary(null).hasVotes, false);
+  const base = { disclosed: true, progress: 50, candidates: [{ name: 'A', votes: 60, percent: 60 }, { name: 'B', votes: 40, percent: 40 }] };
+  assert.equal(regionSummary({ data: { ...base, disclosed: false } }).hasVotes, false);
+  assert.equal(regionSummary({ data: base }).leader, 'A');
+  assert.equal(regionSummary({ data: base, cached: true }).stale, true);
+  assert.equal(regionSummary({ data: { ...base, candidates: [{ name: 'A', votes: 50 }, { name: 'B', votes: 50 }] } }).tie, true);
 });

@@ -5,17 +5,34 @@ export const OFFICES = [
   { id: 'senador', name: 'Senador', code: 5, election: 6259, region: 'to', seats: 2, label: 'SENADO FEDERAL' },
   { id: 'deputado-estadual', name: 'Deputado estadual', code: 7, election: 6259, region: 'to', seats: 24, proportional: true, label: 'ASSEMBLEIA LEGISLATIVA' },
 ];
+export const SECOND_ROUND_OFFICES = [
+  { id: 'presidente', name: 'Presidente', code: 1, election: 6258, region: 'br', seats: 1, turn: 2, label: 'EXECUTIVO FEDERAL' },
+  { id: 'governador', name: 'Governador', code: 3, election: 6260, region: 'to', seats: 1, turn: 2, label: 'EXECUTIVO ESTADUAL' },
+];
 export const SOURCE = 'https://resultados.tse.jus.br';
 export const START = Date.parse('2026-10-04T17:00:00-03:00');
+export const SECOND_ROUND_START = Date.parse('2026-10-25T17:00:00-03:00');
 export const INTERVAL = 30_000;
+export const STATES = [
+  ['ac', 'Acre'], ['al', 'Alagoas'], ['ap', 'Amapá'], ['am', 'Amazonas'], ['ba', 'Bahia'],
+  ['ce', 'Ceará'], ['df', 'Distrito Federal'], ['es', 'Espírito Santo'], ['go', 'Goiás'],
+  ['ma', 'Maranhão'], ['mt', 'Mato Grosso'], ['ms', 'Mato Grosso do Sul'], ['mg', 'Minas Gerais'],
+  ['pa', 'Pará'], ['pb', 'Paraíba'], ['pr', 'Paraná'], ['pe', 'Pernambuco'], ['pi', 'Piauí'],
+  ['rj', 'Rio de Janeiro'], ['rn', 'Rio Grande do Norte'], ['rs', 'Rio Grande do Sul'],
+  ['ro', 'Rondônia'], ['rr', 'Roraima'], ['sc', 'Santa Catarina'], ['sp', 'São Paulo'],
+  ['se', 'Sergipe'], ['to', 'Tocantins'],
+];
+const REGIONS = new Set(['br', ...STATES.map(([code]) => code)]);
+
+export const resultWindowOpen = (office, now = Date.now()) => now >= (office.turn === 2 ? SECOND_ROUND_START : START);
 
 export function resultUrl(office, region = office.region) {
-  if (!['br', 'to'].includes(region) || (office.code !== 1 && region !== 'to')) throw new Error('Abrangência inválida.');
+  if (!REGIONS.has(region) || (office.code !== 1 && region !== 'to')) throw new Error('Abrangência inválida.');
   return `${SOURCE}/oficial/ele2026/${office.election}/dados/${region}/${region}-c${String(office.code).padStart(4, '0')}-e${String(office.election).padStart(6, '0')}-u.json`;
 }
 
 export function municipalUrl(office, code) {
-  if (!OFFICES.includes(office) || !/^\d{5}$/.test(String(code))) throw new Error('Município ou cargo inválido.');
+  if (![...OFFICES, ...SECOND_ROUND_OFFICES].includes(office) || !/^\d{5}$/.test(String(code))) throw new Error('Município ou cargo inválido.');
   return `${SOURCE}/oficial/ele2026/${office.election}/dados/to/to${code}-c${String(office.code).padStart(4, '0')}-e${String(office.election).padStart(6, '0')}-u.json`;
 }
 
@@ -36,8 +53,8 @@ function stamp(date, time) {
 }
 
 export function normalize(raw, office, region = office.region, municipality = null) {
-  if (!raw || raw.f !== 'o' || Number(raw.ele) !== office.election || String(raw.t) !== '1' || raw.sup !== 'n') {
-    throw new Error('O arquivo não corresponde à eleição oficial de 2026, 1º turno.');
+  if (!raw || raw.f !== 'o' || Number(raw.ele) !== office.election || String(raw.t) !== String(office.turn || 1) || raw.sup !== 'n') {
+    throw new Error('O arquivo não corresponde à eleição oficial de 2026 e ao turno selecionado.');
   }
   const expectedArea = municipality == null ? region : String(municipality);
   const expectedType = municipality == null ? (region === 'br' ? 'br' : 'uf') : 'mu';
