@@ -36,9 +36,9 @@ export function mapPaths(features, width = 360, height = 600) {
 
 export function initMap(getState, getOffices = () => OFFICES) {
   const section = $('municipal-map');
-  if (!section) return { updated() {}, setOffices() {} };
+  if (!section) return { updated() {}, setOffices() {}, setVisible() {} };
   const officeKey = office => (office.turn || 1) + ':' + office.id;
-  let municipalities = [], shapes = [], selectedOffice = getOffices()[1] || getOffices()[0], selectedCode = null, runId = 0, busy = false, cooldown = 0;
+  let municipalities = [], shapes = [], selectedOffice = getOffices()[1] || getOffices()[0], selectedCode = null, runId = 0, busy = false, cooldown = 0, visible = true;
   const results = new Map([...OFFICES, ...SECOND_ROUND_OFFICES].map(office => [officeKey(office), new Map()]));
   const loaded = new Set(), lastLoad = new Map();
   const selector = $('map-office'), search = $('map-search'), note = $('map-note'), detail = $('map-detail');
@@ -112,7 +112,7 @@ export function initMap(getState, getOffices = () => OFFICES) {
   }
 
   async function loadVotes(force = false) {
-    if (busy || !municipalities.length || Date.now() < cooldown) return;
+    if (!visible || !section.open || busy || !municipalities.length || Date.now() < cooldown) return;
     if (!getState(selectedOffice)?.data?.disclosed) { note.textContent = 'Aguardando a divulgação dos votos deste cargo pelo TSE.'; return; }
     if (!force && loaded.has(officeKey(selectedOffice)) && Date.now() - (lastLoad.get(officeKey(selectedOffice)) || 0) < 300_000) { note.textContent = 'Mapa atualizado anteriormente. Use Atualizar mapa para uma nova consulta.'; return; }
     busy = true;
@@ -121,6 +121,7 @@ export function initMap(getState, getOffices = () => OFFICES) {
     note.textContent = 'Consultando municípios no TSE: 0 de ' + municipalities.length + '.';
     for (const city of municipalities) {
       if (id !== runId) return;
+      if (!visible || !section.open) { busy = false; return; }
       try {
         const response = await fetch(municipalUrl(office, city.code), { cache: 'no-cache', credentials: 'omit', signal: AbortSignal.timeout(12_000) });
         if (!response.ok) {
@@ -128,8 +129,10 @@ export function initMap(getState, getOffices = () => OFFICES) {
           throw new Error('HTTP ' + response.status);
         }
         const data = normalize(await response.json(), office, 'to', city.code);
+        if (id !== runId) return;
         current.set(city.code, municipalityResult(data));
       } catch {
+        if (id !== runId) return;
         busy = false;
         note.textContent = 'Consulta interrompida após ' + done + ' municípios. O TSE pode estar indisponível; tente atualizar mais tarde.';
         paint(); return;
@@ -145,11 +148,15 @@ export function initMap(getState, getOffices = () => OFFICES) {
 
   function maybeLoad() {
     const state = getState(selectedOffice);
-    if (!section.open || busy) return;
+    if (!visible || !section.open || busy) return;
     if (state?.error || state?.cached) { note.textContent = 'A consulta principal está indisponível; o mapa conserva os dados já recebidos.'; return; }
     void loadVotes();
   }
-  section.addEventListener('toggle', () => { if (section.open && !municipalities.length) void prepare(); else maybeLoad(); });
+  section.addEventListener('toggle', () => { if (visible && section.open && !municipalities.length) void prepare(); else maybeLoad(); });
   $('map-refresh').addEventListener('click', () => { if (Date.now() < cooldown) { note.textContent = 'A fonte pediu uma pausa. Tente novamente em alguns minutos.'; return; } void loadVotes(true); });
-  return { updated: office => { if (section.open && officeKey(office) === officeKey(selectedOffice)) maybeLoad(); }, setOffices };
+  return {
+    updated: office => { if (visible && section.open && officeKey(office) === officeKey(selectedOffice)) maybeLoad(); },
+    setOffices,
+    setVisible(value) { visible = value; if (!visible) { runId += 1; busy = false; } else if (section.open) { if (!municipalities.length) void prepare(); else maybeLoad(); } },
+  };
 }

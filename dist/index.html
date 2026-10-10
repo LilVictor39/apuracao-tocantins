@@ -29,7 +29,7 @@
   <main class="wrap">
     <section class="intro" aria-labelledby="page-title">
       <div>
-        <div class="eyebrow"><span class="location-dot" aria-hidden="true"></span> TOCANTINS <span class="eyebrow-slash">/</span> PLANTÃO DOS GATINHOS</div>
+        <div class="eyebrow"><img class="to-flag" src="./bandeira-tocantins.svg" alt="Bandeira do Tocantins" width="28" height="20"> TOCANTINS <span class="eyebrow-slash">/</span> PLANTÃO DOS GATINHOS</div>
         <h1 id="page-title">De olho nos votos.<br><span>E no seu cursor.</span></h1>
         <p class="intro-description" id="intro-description">Presidente e governador no 2º turno.<br>Uma apuração sob a supervisão de muitos bigodes.</p>
         <div class="cat-controls"><button id="cat-toggle" class="cat-toggle" type="button" aria-pressed="true"><span class="tiny-paw" aria-hidden="true">✿</span><span id="cat-toggle-label">Olhinhos curiosos</span></button><button id="theme-toggle" class="theme-toggle" type="button" aria-label="Ativar tema escuro" aria-pressed="false"><svg class="theme-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><defs><mask id="theme-orb-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="32" height="32"><rect width="32" height="32" fill="white"/><circle class="theme-cutout" cx="16" cy="16" r="7" fill="black"/></mask></defs><path class="theme-rays" d="M16 2v4m0 20v4M2 16h4m20 0h4M6.1 6.1l2.8 2.8m14.2 14.2 2.8 2.8M25.9 6.1l-2.8 2.8M8.9 23.1l-2.8 2.8"/><circle class="theme-orb" cx="16" cy="16" r="7" mask="url(#theme-orb-mask)"/></svg><span id="theme-toggle-label">Tema claro</span></button><span class="cat-hint">Mexa o mouse. Eles estão de olho!</span></div>
@@ -70,20 +70,30 @@
       <summary><span>Presidente em todos os estados</span><small>27 unidades da federação · Tocantins em destaque</small></summary>
       <div class="feature-body">
         <p>Compare a votação presidencial do 2º turno em cada estado e no Distrito Federal. Os percentuais e a totalização são os publicados pelo TSE; a decisão para Presidente é nacional.</p>
-        <div class="states-toolbar"><p id="states-note" role="status">Abra para acompanhar os estados.</p><button id="states-refresh" class="refresh-button" type="button">Atualizar estados</button></div>
+        <div class="states-toolbar"><p id="states-note" role="status">Abra para acompanhar os estados. Atualização a cada 5 minutos com a seção aberta.</p><button id="states-refresh" class="refresh-button" type="button">Atualizar estados</button></div>
         <ul id="states-grid" class="states-grid"></ul>
-        <p class="feature-source">Fonte: <a href="https://resultados.tse.jus.br/" target="_blank" rel="noopener noreferrer">resultados oficiais do TSE ↗</a>. As consultas aos estados são espaçadas e feitas quando esta seção está aberta.</p>
+        <p class="feature-source">Fonte: <a href="https://resultados.tse.jus.br/" target="_blank" rel="noopener noreferrer">resultados oficiais do TSE ↗</a>. Atualização automática a cada 5 minutos enquanto esta seção ou o mapa do Brasil estiver aberto, com consultas espaçadas. Use o botão para consultar novamente.</p>
       </div>
     </details>
     <details id="municipal-map" class="data-feature">
-      <summary><span>Mapa do Tocantins por município</span><small id="map-round-label">2º turno · quem tem mais votos em cada cidade</small></summary>
+      <summary><span>Mapa da apuração</span><small id="map-round-label">Brasil por estado ou Tocantins por município</small></summary>
       <div class="feature-body">
-        <p>Os dados municipais vêm dos arquivos oficiais do TSE. A cor indica o candidato mais votado em cada município até a última consulta; áreas sem votos permanecem neutras.</p>
-        <div class="map-controls"><label for="map-office">Cargo<select id="map-office"></select></label><label for="map-search">Buscar município<input id="map-search" type="search" placeholder="Ex.: Palmas"></label><button id="map-refresh" class="refresh-button" type="button">Atualizar mapa</button></div>
-        <p id="map-note" class="feature-note" role="status">Abra o mapa para consultar os municípios.</p>
-        <div id="map-legend" class="map-legend">Aguardando votos municipais.</div>
-        <div class="map-layout"><svg id="map-svg" viewBox="0 0 360 600" role="group" aria-label="Municípios do Tocantins"></svg><div class="map-side"><div id="map-detail" class="map-detail">Selecione um município no mapa ou na lista.</div><ul id="map-list" class="map-list"></ul></div></div>
-        <p class="feature-source">Municípios: <a href="https://www.tse.jus.br/eleicoes/informacoes-tecnicas-sobre-a-divulgacao-de-resultados" target="_blank" rel="noopener noreferrer">TSE</a>. Malha simplificada: <a href="https://servicodados.ibge.gov.br/api/docs/malhas?versao=3" target="_blank" rel="noopener noreferrer">IBGE</a>.</p>
+        <div class="map-scope" role="group" aria-label="Abrangência do mapa"><button type="button" data-map-scope="to" aria-pressed="true">Tocantins · municípios</button><button type="button" data-map-scope="br" aria-pressed="false">Brasil · estados</button></div>
+        <div id="tocantins-map-panel">
+          <p>Os dados municipais vêm dos arquivos oficiais do TSE. A cor indica o candidato mais votado em cada município até a última consulta; áreas sem votos permanecem neutras.</p>
+          <div class="map-controls"><label for="map-office">Cargo<select id="map-office"></select></label><label for="map-search">Buscar município<input id="map-search" type="search" placeholder="Ex.: Palmas"></label><button id="map-refresh" class="refresh-button" type="button">Atualizar mapa</button></div>
+          <p id="map-note" class="feature-note" role="status">Abra o mapa para consultar os municípios.</p>
+          <div id="map-legend" class="map-legend">Aguardando votos municipais.</div>
+          <div class="map-layout"><svg id="map-svg" viewBox="0 0 360 600" role="group" aria-label="Municípios do Tocantins"></svg><div class="map-side"><div id="map-detail" class="map-detail">Selecione um município no mapa ou na lista.</div><ul id="map-list" class="map-list"></ul></div></div>
+          <p class="feature-source">Municípios: <a href="https://www.tse.jus.br/eleicoes/informacoes-tecnicas-sobre-a-divulgacao-de-resultados" target="_blank" rel="noopener noreferrer">TSE</a>. Malha simplificada: <a href="https://servicodados.ibge.gov.br/api/docs/malhas?versao=3" target="_blank" rel="noopener noreferrer">IBGE</a>.</p>
+        </div>
+        <div id="brazil-map-panel" hidden>
+          <p>Presidente no 2º turno por estado. Cada cor mostra quem lidera naquela unidade da federação; a eleição presidencial é decidida pela soma nacional.</p>
+          <div class="states-toolbar"><p id="br-map-note" role="status">Abra o mapa para acompanhar os estados.</p><button id="br-map-refresh" class="refresh-button" type="button">Atualizar mapa</button></div>
+          <div id="br-map-legend" class="map-legend">Aguardando votos estaduais.</div>
+          <div class="map-layout brazil-map-layout"><svg id="br-map-svg" viewBox="0 0 520 540" role="group" aria-label="Estados do Brasil"></svg><div class="map-side"><div id="br-map-detail" class="map-detail">Selecione um estado no mapa ou na lista.</div><ul id="br-map-list" class="map-list"></ul></div></div>
+          <p class="feature-source">Resultados: <a href="https://resultados.tse.jus.br/" target="_blank" rel="noopener noreferrer">TSE</a>. Malha simplificada dos estados: <a href="https://servicodados.ibge.gov.br/api/docs/malhas?versao=3" target="_blank" rel="noopener noreferrer">IBGE</a>. Consultas automáticas a cada 5 minutos com o mapa aberto.</p>
+        </div>
       </div>
     </details>
     <section id="history" class="data-feature" aria-labelledby="history-title">

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 14" fill="#ff9600">
+  <title>Bandeira do Tocantins</title>
+  <path d="M0 0h20v14H0" fill="#fff"/>
+  <path d="M13 0H0v9" fill="#1946b4"/>
+  <path d="M7 14h13V5"/>
+  <g id="rays"><g id="pair"><path id="ray" d="m9.08 5.69-.19-.71.5.54-.03-.73.36.63L10 3l.28 2.42-.28 1.62"/><use href="#ray" transform="rotate(45 10 7)"/></g><use href="#pair" transform="rotate(90 10 7)"/></g>
+  <use href="#rays" transform="rotate(180 10 7)"/>
+</svg>

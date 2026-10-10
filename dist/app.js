@@ -18,6 +18,7 @@ const memory = {
 };
 let region = memory.get('region') === 'to' ? 'to' : 'br';
 let round = memory.get('round') === 1 ? 1 : 2;
+let mapScope = 'to';
 let auto = memory.get('auto') !== false;
 let busy = false;
 let blockedUntil = Math.min(Number(memory.get('blockedUntil')) || 0, Date.now() + 600_000);
@@ -227,7 +228,7 @@ function showRound() {
   $('intro-description').innerHTML = round === 2 ? 'Presidente e governador no 2º turno.<br>Uma apuração sob a supervisão de muitos bigodes.' : 'Presidente, governador, senador e deputado estadual.<br>Veja o resultado do 1º turno.';
   $('date-day').innerHTML = (round === 2 ? '25' : '04') + '<span>/10</span>';
   $('date-round').textContent = round + 'º turno';
-  $('map-round-label').textContent = round + 'º turno · quem tem mais votos em cada cidade';
+  $('map-round-label').textContent = mapScope === 'br' ? 'Presidente · 2º turno por estado' : round + 'º turno · Tocantins por município';
   $('tocantins-spotlight').hidden = round !== 2;
   $('brasil-states').hidden = round !== 2;
   if (round !== 2) $('brasil-states').open = false;
@@ -238,6 +239,16 @@ showRound();
 initCats();
 const mapUpdated = initMap(stateFor, activeOffices);
 const brazil = initBrazil(stateFor, fetchRegion, () => auto);
+document.querySelectorAll('[data-map-scope]').forEach(button => button.addEventListener('click', () => {
+  if (button.dataset.mapScope === mapScope) return;
+  mapScope = button.dataset.mapScope;
+  document.querySelectorAll('[data-map-scope]').forEach(option => option.setAttribute('aria-pressed', String(option.dataset.mapScope === mapScope)));
+  $('tocantins-map-panel').hidden = mapScope !== 'to';
+  $('brazil-map-panel').hidden = mapScope !== 'br';
+  $('map-round-label').textContent = mapScope === 'br' ? 'Presidente · 2º turno por estado' : round + 'º turno · Tocantins por município';
+  mapUpdated.setVisible(mapScope === 'to');
+  brazil.setMapVisible(mapScope === 'br');
+}));
 const historyState = stateFor(OFFICES[0], 'to');
 renderHistory(historyState.data, historyState.cached);
 $('auto-refresh').checked = auto;

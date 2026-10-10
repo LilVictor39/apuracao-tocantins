@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { municipalityResult, mapPaths } from '../dist/map.js';
 import { comparison } from '../dist/history.js';
-import { regionSummary } from '../dist/brasil.js';
+import { IBGE_CODES, regionSummary } from '../dist/brasil.js';
+import { STATES } from '../dist/tse.js';
 
 test('mapa oficial associa as 139 áreas do IBGE aos municípios do TSE', () => {
   const cities = JSON.parse(readFileSync(new URL('../dist/to-municipios.json', import.meta.url))).municipalities;
@@ -13,6 +14,18 @@ test('mapa oficial associa as 139 áreas do IBGE aos municípios do TSE', () => 
   assert.equal(paths.length, 139);
   assert.ok(paths.every(path => path.d.startsWith('M')));
   assert.deepEqual(new Set(paths.map(path => path.ibge)), new Set(cities.map(city => city.ibge)));
+});
+
+test('mapa nacional contém as 27 unidades da federação, incluindo Tocantins', () => {
+  const geo = JSON.parse(readFileSync(new URL('../dist/br-malha.geojson', import.meta.url)));
+  const paths = mapPaths(geo.features, 520, 540);
+  assert.equal(geo.type, 'FeatureCollection');
+  assert.equal(paths.length, 27);
+  assert.equal(new Set(paths.map(path => path.ibge)).size, 27);
+  assert.ok(paths.some(path => path.ibge === '17'));
+  assert.deepEqual(new Set(paths.map(path => path.ibge)), new Set(Object.values(IBGE_CODES)));
+  assert.deepEqual(new Set(Object.keys(IBGE_CODES)), new Set(STATES.map(([code]) => code)));
+  assert.ok(paths.every(path => path.d.startsWith('M')));
 });
 
 test('mapa só nomeia líder com votos divulgados e trata empate', () => {
