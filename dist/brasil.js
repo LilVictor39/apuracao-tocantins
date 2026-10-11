@@ -1,7 +1,6 @@
-import { SECOND_ROUND_OFFICES, SECOND_ROUND_START, STATES } from './tse.js';
+import { OFFICES, SECOND_ROUND_OFFICES, STATES, resultWindowOpen } from './tse.js';
 import { mapPaths } from './map.js';
 
-const president = SECOND_ROUND_OFFICES[0];
 const nf = new Intl.NumberFormat('pt-BR');
 const pf = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
@@ -28,7 +27,7 @@ export function regionSummary(state) {
   };
 }
 
-export function initBrazil(getState, fetchRegion, isAuto = () => true) {
+export function initBrazil(getState, fetchRegion, getRound, isAuto = () => true) {
   const section = document.getElementById('brasil-states');
   const spotlight = document.getElementById('tocantins-spotlight');
   const grid = document.getElementById('states-grid');
@@ -41,9 +40,12 @@ export function initBrazil(getState, fetchRegion, isAuto = () => true) {
   const mapLegend = document.getElementById('br-map-legend');
   const mapNote = document.getElementById('br-map-note');
   const mapRefresh = document.getElementById('br-map-refresh');
-  if (!section || !spotlight || !grid || !note || !button || !mapSection || !mapSvg || !mapList || !mapDetail || !mapLegend || !mapNote || !mapRefresh) return { updated() {}, setMapVisible() {} };
+  const statesDescription = document.getElementById('states-description');
+  const mapDescription = document.getElementById('br-map-description');
+  if (!section || !spotlight || !grid || !note || !button || !mapSection || !mapSvg || !mapList || !mapDetail || !mapLegend || !mapNote || !mapRefresh || !statesDescription || !mapDescription) return { updated() {}, setMapVisible() {}, setRound() {} };
   let busy = false, run = 0, mapVisible = false, mapReady = false, mapLoading = false, mapShapes = [], selectedUf = 'to';
   const candidateColors = new Map();
+  const president = () => (getRound() === 2 ? SECOND_ROUND_OFFICES : OFFICES)[0];
   const active = () => section.open || (mapVisible && mapSection.open);
   const setNote = message => { note.textContent = message; mapNote.textContent = message; };
 
@@ -53,7 +55,7 @@ export function initBrazil(getState, fetchRegion, isAuto = () => true) {
   }
 
   function mapResult(code) {
-    const summary = regionSummary(getState(president, code));
+    const summary = regionSummary(getState(president(), code));
     summary.candidates.forEach(colorFor);
     return summary;
   }
@@ -114,9 +116,10 @@ export function initBrazil(getState, fetchRegion, isAuto = () => true) {
   mapList.addEventListener('click', event => { const target = event.target.closest('button[data-uf]'); if (target) selectUf(target.dataset.uf); });
 
   function content(code) {
-    const summary = regionSummary(getState(president, code));
+    const office = president();
+    const summary = regionSummary(getState(office, code));
     if (!summary.hasVotes) {
-      const message = Date.now() < SECOND_ROUND_START ? 'Aguardando o 2º turno' : 'Votos ainda não divulgados';
+      const message = !resultWindowOpen(office) ? 'Aguardando o ' + getRound() + 'º turno' : 'Votos ainda não divulgados';
       return '<p class="state-empty">' + message + (summary.stale ? ' · última consulta indisponível' : '') + '</p>';
     }
     return '<p class="state-leader">' + (summary.tie ? 'Empate na primeira posição' : esc(summary.leader) + ' lidera') + '</p>' +
@@ -128,20 +131,24 @@ export function initBrazil(getState, fetchRegion, isAuto = () => true) {
   }
 
   function render() {
-    spotlight.innerHTML = '<div><span class="state-eyebrow">NOSSO ESTADO EM DESTAQUE</span><h2><img class="to-flag spotlight-flag" src="./bandeira-tocantins.svg" alt="Bandeira do Tocantins" width="39" height="28">Tocantins na votação presidencial</h2><p>Resultado estadual do 2º turno. A eleição para Presidente é decidida pela votação nacional.</p></div><div class="state-highlight-result">' + content('to') + '</div>';
+    const round = getRound();
+    spotlight.innerHTML = '<div><span class="state-eyebrow">NOSSO ESTADO EM DESTAQUE</span><h2><img class="to-flag spotlight-flag" src="./bandeira-tocantins.svg" alt="Bandeira do Tocantins" width="39" height="28">Tocantins na votação presidencial</h2><p>Resultado estadual do ' + round + 'º turno. A eleição para Presidente é decidida pela votação nacional.</p></div><div class="state-highlight-result">' + content('to') + '</div>';
+    statesDescription.textContent = 'Compare a votação presidencial do ' + round + 'º turno em cada estado e no Distrito Federal. Os percentuais e a totalização são os publicados pelo TSE; a decisão para Presidente é nacional.';
+    mapDescription.textContent = 'Presidente no ' + round + 'º turno por estado. Cada cor mostra quem lidera naquela unidade da federação; a eleição presidencial é decidida pela soma nacional.';
     grid.innerHTML = ordered.map(([code, name]) => '<li class="state-card' + (code === 'to' ? ' state-card-to' : '') + '"><div class="state-card-head"><strong>' + esc(name) + '</strong><span>' + code.toUpperCase() + '</span></div>' + content(code) + '</li>').join('');
     renderMap();
   }
 
   async function load(force = false) {
     if (busy || !active()) return;
-    if (Date.now() < SECOND_ROUND_START) { setNote('Os votos dos estados serão divulgados após as 17h de 25 de outubro (Brasília).'); return; }
+    const office = president();
+    if (!resultWindowOpen(office)) { setNote('Os votos dos estados serão divulgados após as 17h de ' + (getRound() === 2 ? '25' : '4') + ' de outubro (Brasília).'); return; }
     if (document.hidden) return;
     if (!navigator.onLine) { setNote('Sem conexão. Os dados já recebidos continuam visíveis.'); return; }
     if (!force && !isAuto()) { setNote('Atualização automática pausada. Use Atualizar para consultar o TSE.'); return; }
     busy = true; button.disabled = true; mapRefresh.disabled = true;
     const id = ++run;
-    const queue = ordered.filter(([code]) => code !== 'to' && (force || getState(president, code).next <= Date.now()));
+    const queue = ordered.filter(([code]) => code !== 'to' && (force || getState(office, code).next <= Date.now()));
     if (!queue.length) {
       busy = false; button.disabled = false; mapRefresh.disabled = false;
       setNote('Dados recentes preservados no navegador. Nova consulta automática em até 5 minutos; use Atualizar para consultar agora.');
@@ -151,8 +158,8 @@ export function initBrazil(getState, fetchRegion, isAuto = () => true) {
     setNote('Consultando os estados no TSE, um de cada vez…');
     for (const [code] of queue) {
       if (id !== run || !active()) break;
-      const outcome = await fetchRegion(code, force);
-      if (id !== run) { busy = false; button.disabled = false; mapRefresh.disabled = false; return; }
+      const outcome = await fetchRegion(office, code, force);
+      if (id !== run) return;
       if (outcome.fetched) { consulted += 1; render(); }
       if ([403, 404, 422, 429].includes(outcome.status)) {
         setNote('A consulta foi pausada após resposta ' + outcome.status + ' do TSE. Os resultados já recebidos continuam visíveis.');
@@ -168,6 +175,7 @@ export function initBrazil(getState, fetchRegion, isAuto = () => true) {
         await wait(250);
       }
     }
+    if (id !== run) return;
     busy = false; button.disabled = false; mapRefresh.disabled = false;
     if (active()) setNote(consulted ? 'Atualização concluída. ' + consulted + ' estados consultados; Tocantins acompanha o painel principal. Nova consulta em até 5 minutos.' : 'Dados recentes preservados no navegador. Use Atualizar para consultar novamente.');
   }
@@ -185,7 +193,8 @@ export function initBrazil(getState, fetchRegion, isAuto = () => true) {
   setInterval(() => { if (active()) void load(); }, 5 * 60_000);
   render();
   return {
-    updated(state) { if (state.office === president && state.area === 'to') { render(); if (active()) void load(); } },
+    updated(state) { if (state.office === president() && state.area === 'to') { render(); if (active()) void load(); } },
+    setRound() { run += 1; busy = false; button.disabled = false; mapRefresh.disabled = false; candidateColors.clear(); render(); if (active()) void load(); },
     setMapVisible(value) { mapVisible = value; if (mapVisible && mapSection.open) { void prepareMap(); renderMap(); void load(); } else if (!active()) run += 1; },
   };
 }

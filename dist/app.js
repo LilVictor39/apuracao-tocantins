@@ -160,8 +160,8 @@ function tick() {
   if (auto && !busy && (!document.hidden || alertsEnabled()) && navigator.onLine && Date.now() >= blockedUntil && (historyDue || spotlightDue || (!beforeVote && remaining === 0 && activeOffices().some(office => stateFor(office).next <= Date.now())))) void refresh();
 }
 
-async function fetchRegion(code, force = false) {
-  const state = stateFor(SECOND_ROUND_OFFICES[0], code);
+async function fetchRegion(office, code, force = false) {
+  const state = stateFor(office, code);
   if (Date.now() < blockedUntil) return { fetched: false, status: 429 };
   if (!navigator.onLine || (!force && state.next > Date.now())) return { fetched: false, status: null };
   try {
@@ -228,24 +228,21 @@ function showRound() {
   $('intro-description').innerHTML = round === 2 ? 'Presidente e governador no 2º turno.<br>Uma apuração sob a supervisão de muitos bigodes.' : 'Presidente, governador, senador e deputado estadual.<br>Veja o resultado do 1º turno.';
   $('date-day').innerHTML = (round === 2 ? '25' : '04') + '<span>/10</span>';
   $('date-round').textContent = round + 'º turno';
-  $('map-round-label').textContent = mapScope === 'br' ? 'Presidente · 2º turno por estado' : round + 'º turno · Tocantins por município';
-  $('tocantins-spotlight').hidden = round !== 2;
-  $('brasil-states').hidden = round !== 2;
-  if (round !== 2) $('brasil-states').open = false;
+  $('map-round-label').textContent = mapScope === 'br' ? 'Presidente · ' + round + 'º turno por estado' : round + 'º turno · Tocantins por município';
   document.querySelectorAll('[data-round]').forEach(button => button.setAttribute('aria-pressed', String(Number(button.dataset.round) === round)));
 }
 
 showRound();
 initCats();
 const mapUpdated = initMap(stateFor, activeOffices);
-const brazil = initBrazil(stateFor, fetchRegion, () => auto);
+const brazil = initBrazil(stateFor, fetchRegion, () => round, () => auto);
 document.querySelectorAll('[data-map-scope]').forEach(button => button.addEventListener('click', () => {
   if (button.dataset.mapScope === mapScope) return;
   mapScope = button.dataset.mapScope;
   document.querySelectorAll('[data-map-scope]').forEach(option => option.setAttribute('aria-pressed', String(option.dataset.mapScope === mapScope)));
   $('tocantins-map-panel').hidden = mapScope !== 'to';
   $('brazil-map-panel').hidden = mapScope !== 'br';
-  $('map-round-label').textContent = mapScope === 'br' ? 'Presidente · 2º turno por estado' : round + 'º turno · Tocantins por município';
+  $('map-round-label').textContent = mapScope === 'br' ? 'Presidente · ' + round + 'º turno por estado' : round + 'º turno · Tocantins por município';
   mapUpdated.setVisible(mapScope === 'to');
   brazil.setMapVisible(mapScope === 'br');
 }));
@@ -264,7 +261,7 @@ $('race-grid').addEventListener('click', event => {
 document.querySelectorAll('[data-round]').forEach(button => button.addEventListener('click', () => {
   if (busy || Number(button.dataset.round) === round) return;
   round = Number(button.dataset.round); memory.set('round', round);
-  showRound(); mapUpdated.setOffices(activeOffices()); connection(); tick(); void refresh();
+  showRound(); mapUpdated.setOffices(activeOffices()); brazil.setRound(); connection(); tick(); void refresh();
 }));
 window.addEventListener('offline', () => { activeOffices().forEach(office => { const state = stateFor(office); if (state.data) state.cached = true; renderCard(office); }); connection(); tick(); });
 window.addEventListener('online', () => { connection(); tick(); });

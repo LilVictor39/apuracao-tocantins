@@ -69,7 +69,7 @@
     <details id="brasil-states" class="data-feature states-feature">
       <summary><span>Presidente em todos os estados</span><small>27 unidades da federação · Tocantins em destaque</small></summary>
       <div class="feature-body">
-        <p>Compare a votação presidencial do 2º turno em cada estado e no Distrito Federal. Os percentuais e a totalização são os publicados pelo TSE; a decisão para Presidente é nacional.</p>
+        <p id="states-description">Compare a votação presidencial do turno selecionado em cada estado e no Distrito Federal. Os percentuais e a totalização são os publicados pelo TSE; a decisão para Presidente é nacional.</p>
         <div class="states-toolbar"><p id="states-note" role="status">Abra para acompanhar os estados. Atualização a cada 5 minutos com a seção aberta.</p><button id="states-refresh" class="refresh-button" type="button">Atualizar estados</button></div>
         <ul id="states-grid" class="states-grid"></ul>
         <p class="feature-source">Fonte: <a href="https://resultados.tse.jus.br/" target="_blank" rel="noopener noreferrer">resultados oficiais do TSE ↗</a>. Atualização automática a cada 5 minutos enquanto esta seção ou o mapa do Brasil estiver aberto, com consultas espaçadas. Use o botão para consultar novamente.</p>
@@ -88,7 +88,7 @@
           <p class="feature-source">Municípios: <a href="https://www.tse.jus.br/eleicoes/informacoes-tecnicas-sobre-a-divulgacao-de-resultados" target="_blank" rel="noopener noreferrer">TSE</a>. Malha simplificada: <a href="https://servicodados.ibge.gov.br/api/docs/malhas?versao=3" target="_blank" rel="noopener noreferrer">IBGE</a>.</p>
         </div>
         <div id="brazil-map-panel" hidden>
-          <p>Presidente no 2º turno por estado. Cada cor mostra quem lidera naquela unidade da federação; a eleição presidencial é decidida pela soma nacional.</p>
+          <p id="br-map-description">Presidente no turno selecionado por estado. Cada cor mostra quem lidera naquela unidade da federação; a eleição presidencial é decidida pela soma nacional.</p>
           <div class="states-toolbar"><p id="br-map-note" role="status">Abra o mapa para acompanhar os estados.</p><button id="br-map-refresh" class="refresh-button" type="button">Atualizar mapa</button></div>
           <div id="br-map-legend" class="map-legend">Aguardando votos estaduais.</div>
           <div class="map-layout brazil-map-layout"><svg id="br-map-svg" viewBox="0 0 520 540" role="group" aria-label="Estados do Brasil"></svg><div class="map-side"><div id="br-map-detail" class="map-detail">Selecione um estado no mapa ou na lista.</div><ul id="br-map-list" class="map-list"></ul></div></div>

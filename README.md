@@ -31,7 +31,7 @@
 | Turno | O que aparece |
 | :--- | :--- |
 | **2º turno · 25/10** | Presidente no Brasil e nas 27 unidades da federação; Governador do Tocantins; mapa nacional por estado e mapa tocantinense por município. |
-| **1º turno · 04/10** | Presidente, Governador, Senador e Deputado Estadual; mapa municipal do Tocantins e comparativo presidencial com 2022. |
+| **1º turno · 04/10** | Presidente, Governador, Senador e Deputado Estadual; mapas do Brasil por estado e do Tocantins por município; comparativo presidencial com 2022. |
 
 > **Antes da divulgação dos votos:** o 2º turno mostra as candidaturas confirmadas, sem preencher resultados fictícios. As consultas aos arquivos dessa votação só começam após as **17h de 25 de outubro, no horário de Brasília**.
 
@@ -69,7 +69,7 @@ O computador serve os arquivos do site; o navegador do celular consulta o TSE di
 
 | Recurso | Como funciona |
 | :--- | :--- |
-| **Brasil por estado** | Lista e mapa mostram quem lidera para Presidente em cada uma das 27 unidades da federação. Tocantins ganha destaque próprio. |
+| **Brasil por estado** | Lista e mapa acompanham o turno selecionado e mostram quem lidera para Presidente em cada uma das 27 unidades da federação. Tocantins ganha destaque próprio. |
 | **Tocantins por município** | Mapa dos 139 municípios, com busca, lista acessível e cor para o mais votado. Áreas sem votos ficam neutras; empate tem cor própria. |
 | **Tema claro e escuro** | Um botão anima o sol virando lua. O tema claro é o padrão na primeira visita, e a escolha fica salva no navegador. |
 | **Comparativo com 2022** | Compara apenas Presidente no Tocantins, no **1º turno** de cada eleição, sem tratar candidatos de anos diferentes como equivalentes. |
