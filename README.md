@@ -170,7 +170,6 @@ A bandeira de Tocantins usada no site foi baseada no [vetor em domínio público
 </p>
 
 <p align="center">
-  <a href="https://apuracao-tocantins-2026.victordamata197071.chatgpt.site">Abrir site privado</a> &nbsp;·&nbsp;
   <a href="#executar">Executar localmente</a> &nbsp;·&nbsp;
   <a href="#inicio">Voltar ao início ↑</a>
 </p>
