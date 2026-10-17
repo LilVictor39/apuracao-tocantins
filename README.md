@@ -169,7 +169,8 @@ A bandeira de Tocantins usada no site foi baseada no [vetor em domínio público
   <img src="docs/assets/readme/rodape.svg" alt="Miaupuração — dados do TSE, fiscalização felina." width="100%">
 </p>
 
-<p align="center">
+<p align="center"> 
+  <a href="https://miaupuracao-to.vercel.app">Abrir site</a> &nbsp;·&nbsp;
   <a href="#executar">Executar localmente</a> &nbsp;·&nbsp;
   <a href="#inicio">Voltar ao início ↑</a>
 </p>
