@@ -134,8 +134,6 @@ No 1º turno de Presidente no Tocantins em 2022, os dois mais votados foram **Lu
 | [`tests/`](tests/) | Testes dos resultados e dos recursos. |
 | [`docs/assets/readme/`](docs/assets/readme/) | Capa, selos e rodapé deste README. |
 
-O Sites publica apenas `dist/`, conforme [`.openai/hosting.json`](.openai/hosting.json). O projeto publicado permanece privado.
-
 <a id="verificar"></a>
 
 ## 06 · Confira antes de acompanhar
