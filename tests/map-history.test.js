@@ -47,6 +47,7 @@ test('resumo estadual não inventa líder sem votos e sinaliza empate ou consult
   assert.equal(regionSummary(null).hasVotes, false);
   const base = { disclosed: true, progress: 50, candidates: [{ name: 'A', votes: 60, percent: 60 }, { name: 'B', votes: 40, percent: 40 }] };
   assert.equal(regionSummary({ data: { ...base, disclosed: false } }).hasVotes, false);
+  assert.equal(regionSummary({ data: { ...base, disclosed: false } }).progress, null);
   assert.equal(regionSummary({ data: base }).leader, 'A');
   assert.equal(regionSummary({ data: base, cached: true }).stale, true);
   assert.equal(regionSummary({ data: { ...base, candidates: [{ name: 'A', votes: 50 }, { name: 'B', votes: 50 }] } }).tie, true);
@@ -64,11 +65,15 @@ test('mapa e lista do Brasil acompanham o turno selecionado', () => {
   try {
     const brazil = initBrazil((office, area) => {
       queried.push([office.election, area]);
+      if (area === 'ac') return { data: null };
       const name = office.turn === 2 ? 'Candidato do segundo turno' : 'Candidato do primeiro turno';
-      return { data: { disclosed: true, candidates: [{ id: String(office.election), name, votes: 100, percent: 60 }] } };
+      return { data: { disclosed: true, progress: office.turn === 2 ? 67.25 : 83.5, candidates: [{ id: String(office.election), name, votes: 100, percent: 60 }] } };
     }, () => {}, () => round);
     assert.match(elements['tocantins-spotlight'].innerHTML, /Resultado estadual do 2º turno/);
     assert.match(elements['br-map-list'].innerHTML, /Candidato do segundo turno/);
+    assert.match(elements['states-grid'].innerHTML, /Seções totalizadas<\/span><strong>67,25%/);
+    assert.match(elements['states-grid'].innerHTML, /aria-valuenow="67.25"/);
+    assert.match(elements['states-grid'].innerHTML, /<strong>Acre<\/strong>.*?<strong>—<\/strong>/);
     round = 1;
     brazil.setRound();
     assert.match(elements['tocantins-spotlight'].innerHTML, /Resultado estadual do 1º turno/);
@@ -77,6 +82,8 @@ test('mapa e lista do Brasil acompanham o turno selecionado', () => {
     assert.match(elements['br-map-description'].textContent, /1º turno/);
     assert.match(elements['br-map-list'].innerHTML, /Candidato do primeiro turno/);
     assert.doesNotMatch(elements['br-map-list'].innerHTML, /Candidato do segundo turno/);
+    assert.match(elements['states-grid'].innerHTML, /Seções totalizadas<\/span><strong>83,50%/);
+    assert.doesNotMatch(elements['states-grid'].innerHTML, /67,25%/);
     assert.ok(queried.some(([election, area]) => election === SECOND_ROUND_OFFICES[0].election && area === 'to'));
     assert.ok(queried.some(([election, area]) => election === OFFICES[0].election && area === 'to'));
   } finally {

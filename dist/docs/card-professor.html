@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Card de apresentação · Miaupuração</title>
+  <style>
+    :root { font-family: Arial, sans-serif; color: #3c332e; background: #f7efe3; }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 32px 18px 56px; }
+    main { max-width: 1200px; margin: auto; }
+    h1 { margin: 0 0 8px; font-size: clamp(26px, 4vw, 38px); }
+    p { margin: 0; line-height: 1.55; color: #685950; }
+    .controls { display: flex; flex-wrap: wrap; align-items: end; gap: 14px; margin: 26px 0 12px; }
+    label { display: grid; gap: 7px; flex: 1 1 360px; font-weight: 700; font-size: 14px; }
+    input { width: 100%; min-height: 48px; padding: 11px 14px; border: 1px solid #ccb9a5; border-radius: 10px; background: #fffdf9; color: #3c332e; font: inherit; font-weight: 400; }
+    input:focus-visible, button:focus-visible { outline: 3px solid #b95735; outline-offset: 3px; }
+    button { min-height: 48px; border: 0; border-radius: 10px; padding: 11px 19px; color: white; background: #a94f32; font: inherit; font-weight: 700; cursor: pointer; }
+    button:hover { background: #893b25; }
+    button:disabled { background: #a99a8e; cursor: not-allowed; }
+    .hint { min-height: 25px; margin-bottom: 18px; font-size: 13px; }
+    .preview { border: 1px solid #dbc8b3; border-radius: 18px; overflow: hidden; box-shadow: 0 14px 34px #59402b22; background: #fff8ed; }
+    svg { display: block; width: 100%; height: auto; }
+    .footnote { margin-top: 14px; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Card para apresentar o Miaupuração</h1>
+    <p>Cole o endereço do projeto no Vercel. A prévia abaixo será atualizada e poderá ser baixada como imagem PNG para enviar ao professor.</p>
+    <div class="controls">
+      <label for="site-url">Link do site no Vercel
+        <input id="site-url" type="url" inputmode="url" autocomplete="url" placeholder="https://miaupuracao.vercel.app" aria-describedby="url-hint">
+      </label>
+      <button id="download" type="button" disabled>Baixar card em PNG</button>
+    </div>
+    <p class="hint" id="url-hint" role="status">Digite o link completo, começando por https://.</p>
+
+    <div class="preview">
+      <svg id="card" xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="card-title card-description">
+        <title id="card-title">Card de apresentação do Miaupuração</title>
+        <desc id="card-description">Painel das Eleições 2026 com dados do TSE, Brasil no mapa e Tocantins em destaque. Inclui endereço do projeto.</desc>
+        <defs>
+          <pattern id="paper-dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.2" fill="#e8d5bd"/></pattern>
+          <clipPath id="card-corners"><rect width="1200" height="675" rx="18"/></clipPath>
+        </defs>
+        <g clip-path="url(#card-corners)">
+          <rect width="1200" height="675" fill="#fff8ed"/>
+          <rect width="1200" height="552" fill="url(#paper-dots)"/>
+          <circle cx="980" cy="274" r="245" fill="#f0e3cf"/>
+          <path d="M731 62v434" stroke="#e5d4bd" stroke-width="2"/>
+
+          <rect x="62" y="57" width="236" height="38" rx="19" fill="#e9eee0"/>
+          <circle cx="83" cy="76" r="5" fill="#70934a"/>
+          <text x="98" y="82" fill="#4e6840" font-family="Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.3">PROJETO WEB · 2026</text>
+          <text x="60" y="206" fill="#b95735" font-family="Arial, sans-serif" font-size="74" font-weight="700" letter-spacing="-4">Miaupuração<tspan fill="#e7a966">.</tspan></text>
+          <text x="64" y="270" fill="#3c332e" font-family="Arial, sans-serif" font-size="31" font-weight="700">De olho nos votos.</text>
+          <text x="64" y="312" fill="#3c332e" font-family="Arial, sans-serif" font-size="31" font-weight="700">E no seu cursor.</text>
+          <text x="65" y="365" fill="#63554c" font-family="Arial, sans-serif" font-size="21">Acompanhe as Eleições 2026 com dados do TSE.</text>
+          <text x="65" y="397" fill="#63554c" font-family="Arial, sans-serif" font-size="21">Brasil inteiro no mapa. Tocantins em destaque.</text>
+
+          <rect x="63" y="444" width="180" height="40" rx="20" fill="#fffdf8" stroke="#d9c5ae"/>
+          <text x="153" y="470" text-anchor="middle" fill="#744d3b" font-family="Arial, sans-serif" font-size="15" font-weight="700">1º e 2º turnos</text>
+          <rect x="255" y="444" width="192" height="40" rx="20" fill="#fffdf8" stroke="#d9c5ae"/>
+          <text x="351" y="470" text-anchor="middle" fill="#744d3b" font-family="Arial, sans-serif" font-size="15" font-weight="700">Mapas interativos</text>
+          <rect x="459" y="444" width="174" height="40" rx="20" fill="#fffdf8" stroke="#d9c5ae"/>
+          <text x="546" y="470" text-anchor="middle" fill="#744d3b" font-family="Arial, sans-serif" font-size="15" font-weight="700">Gatinhos reativos</text>
+
+          <g transform="translate(766 73)">
+            <rect x="69" y="320" width="307" height="112" rx="20" fill="#766381" stroke="#5e4c68" stroke-width="4"/>
+            <rect x="84" y="334" width="277" height="82" rx="11" fill="#e7ddec"/>
+            <text x="222" y="382" text-anchor="middle" fill="#66536d" font-family="Arial, sans-serif" font-size="17" font-weight="700" letter-spacing="1.3">COMISSÃO DOS BIGODES</text>
+            <path d="M100 149 90 55l80 60q54-29 107 0l79-60-10 94q43 69 4 125-39 51-126 51T98 274q-39-56 2-125Z" fill="#e9a464" stroke="#4b3a32" stroke-width="6" stroke-linejoin="round"/>
+            <path d="m107 130-6-51 45 37m194 14 6-51-45 37" fill="#f3c396" stroke="#4b3a32" stroke-width="3"/>
+            <ellipse cx="171" cy="204" rx="31" ry="38" fill="#fffaf1"/>
+            <ellipse cx="275" cy="204" rx="31" ry="38" fill="#fffaf1"/>
+            <ellipse cx="181" cy="208" rx="9" ry="19" fill="#49352f"/>
+            <ellipse cx="265" cy="208" rx="9" ry="19" fill="#49352f"/>
+            <path d="m207 249 16 11 16-11-16-7Z" fill="#ae6d75"/>
+            <path d="M223 261v12m0 0q-15 13-30 0m30 0q15 13 30 0" fill="none" stroke="#4b3a32" stroke-width="4" stroke-linecap="round"/>
+            <path d="m139 252-54-9m54 19-54 6m221-16 54-9m-54 19 54 6" stroke="#4b3a32" stroke-width="3" stroke-linecap="round"/>
+            <ellipse cx="155" cy="323" rx="32" ry="18" fill="#e9a464" stroke="#4b3a32" stroke-width="4"/>
+            <ellipse cx="290" cy="323" rx="32" ry="18" fill="#e9a464" stroke="#4b3a32" stroke-width="4"/>
+            <g transform="translate(17 335)">
+              <rect width="46" height="34" rx="3" fill="#fff" stroke="#998776"/>
+              <path d="M0 0h30L0 23" fill="#1946b4"/>
+              <path d="M17 34h29V11" fill="#ff9600"/>
+              <circle cx="24" cy="18" r="5" fill="#ff9600"/>
+            </g>
+          </g>
+
+          <rect y="552" width="1200" height="123" fill="#3c332e"/>
+          <rect x="62" y="578" width="207" height="69" rx="12" fill="#e9a464"/>
+          <text x="165" y="607" text-anchor="middle" fill="#3c332e" font-family="Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1">ACESSAR O SITE</text>
+          <path d="M143 626h44m-14-14 14 14-14 14" fill="none" stroke="#3c332e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <text id="card-url" x="299" y="611" fill="#fff8ed" font-family="Arial, sans-serif" font-size="29" font-weight="700">seu-projeto.vercel.app</text>
+          <text x="301" y="641" fill="#d7c9b8" font-family="Arial, sans-serif" font-size="16">Painel pessoal independente · dados públicos do TSE</text>
+        </g>
+      </svg>
+    </div>
+    <p class="footnote">A imagem mostra o endereço, mas imagens não abrem links ao toque. Envie o link também no texto da mensagem ao professor.</p>
+  </main>
+  <script>
+    const input = document.getElementById('site-url');
+    const download = document.getElementById('download');
+    const hint = document.getElementById('url-hint');
+    const svg = document.getElementById('card');
+    const urlText = document.getElementById('card-url');
+
+    function validUrl() {
+      try {
+        const url = new URL(input.value.trim());
+        return url.protocol === 'https:' && url.hostname.includes('.') ? url : null;
+      } catch { return null; }
+    }
+
+    function update() {
+      const url = validUrl();
+      download.disabled = !url;
+      hint.textContent = url ? 'Pronto: o endereço aparece no card. Agora você pode baixar o PNG.' : 'Digite o link completo, começando por https://.';
+      const value = url ? url.host + url.pathname.replace(/\/$/, '') : 'seu-projeto.vercel.app';
+      urlText.textContent = value;
+      urlText.setAttribute('font-size', '29');
+      if (urlText.getComputedTextLength() > 825) urlText.setAttribute('font-size', Math.max(17, Math.floor(29 * 825 / urlText.getComputedTextLength())));
+    }
+
+    input.addEventListener('input', update);
+    download.addEventListener('click', () => {
+      if (!validUrl()) return;
+      const source = new XMLSerializer().serializeToString(svg);
+      const objectUrl = URL.createObjectURL(new Blob([source], { type: 'image/svg+xml;charset=utf-8' }));
+      const image = new Image();
+      image.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 2400;
+        canvas.height = 1350;
+        const context = canvas.getContext('2d');
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        URL.revokeObjectURL(objectUrl);
+        canvas.toBlob(blob => {
+          if (!blob) { hint.textContent = 'Não foi possível gerar a imagem neste navegador.'; return; }
+          const pngUrl = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = pngUrl;
+          link.download = 'miaupuracao-card-professor.png';
+          link.click();
+          setTimeout(() => URL.revokeObjectURL(pngUrl), 60_000);
+        }, 'image/png');
+      };
+      image.onerror = () => { URL.revokeObjectURL(objectUrl); hint.textContent = 'Não foi possível gerar a imagem neste navegador.'; };
+      image.src = objectUrl;
+    });
+    update();
+  </script>
+</body>
+</html>

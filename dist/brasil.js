@@ -20,7 +20,7 @@ export function regionSummary(state) {
     leader: hasVotes && first.votes !== second?.votes ? first.name : null,
     tie: hasVotes && first.votes === second?.votes,
     candidates: hasVotes ? data.candidates.slice(0, 2) : [],
-    progress: data?.progress ?? null,
+    progress: data?.disclosed ? data.progress ?? null : null,
     completed: Boolean(data?.completed),
     updated: data?.updated || data?.generated || null,
     stale: Boolean(state?.cached || state?.error),
@@ -118,14 +118,19 @@ export function initBrazil(getState, fetchRegion, getRound, isAuto = () => true)
   function content(code) {
     const office = president();
     const summary = regionSummary(getState(office, code));
+    const progress = summary.progress;
+    const progressText = progress == null ? '—' : pf.format(progress) + '%';
+    const progressBar = progress == null
+      ? '<div class="state-progress-track" aria-hidden="true"></div>'
+      : '<div class="state-progress-track" role="progressbar" aria-label="Seções totalizadas em ' + esc(stateNames.get(code)) + '" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + progress + '"><span style="width:' + progress + '%"></span></div>';
+    const progressContent = '<div class="state-progress"><span>Seções totalizadas</span><strong>' + progressText + '</strong></div>' + progressBar;
     if (!summary.hasVotes) {
       const message = !resultWindowOpen(office) ? 'Aguardando o ' + getRound() + 'º turno' : 'Votos ainda não divulgados';
-      return '<p class="state-empty">' + message + (summary.stale ? ' · última consulta indisponível' : '') + '</p>';
+      return progressContent + '<p class="state-empty">' + message + (summary.stale ? ' · última consulta indisponível' : '') + '</p>';
     }
-    return '<p class="state-leader">' + (summary.tie ? 'Empate na primeira posição' : esc(summary.leader) + ' lidera') + '</p>' +
+    return progressContent + '<p class="state-leader">' + (summary.tie ? 'Empate na primeira posição' : esc(summary.leader) + ' lidera') + '</p>' +
       '<div class="state-candidates">' + summary.candidates.map(candidate => '<div><span>' + esc(candidate.name) + '</span><strong>' + (candidate.percent == null ? '—' : pf.format(candidate.percent) + '%') + '</strong><small>' + nf.format(candidate.votes) + ' votos</small></div>').join('') + '</div>' +
       '<p class="state-meta">' + (summary.completed ? 'Totalização final' : 'Parcial') +
-      (summary.progress == null ? '' : ' · ' + pf.format(summary.progress) + '% das seções') +
       (summary.stale ? ' · consulta anterior' : '') +
       (summary.updated ? ' · ' + esc(summary.updated) + ' (Brasília)' : '') + '</p>';
   }
@@ -133,7 +138,7 @@ export function initBrazil(getState, fetchRegion, getRound, isAuto = () => true)
   function render() {
     const round = getRound();
     spotlight.innerHTML = '<div><span class="state-eyebrow">NOSSO ESTADO EM DESTAQUE</span><h2><img class="to-flag spotlight-flag" src="./bandeira-tocantins.svg" alt="Bandeira do Tocantins" width="39" height="28">Tocantins na votação presidencial</h2><p>Resultado estadual do ' + round + 'º turno. A eleição para Presidente é decidida pela votação nacional.</p></div><div class="state-highlight-result">' + content('to') + '</div>';
-    statesDescription.textContent = 'Compare a votação presidencial do ' + round + 'º turno em cada estado e no Distrito Federal. Os percentuais e a totalização são os publicados pelo TSE; a decisão para Presidente é nacional.';
+    statesDescription.textContent = 'Compare a votação presidencial do ' + round + 'º turno em cada estado e no Distrito Federal. Cada card mostra as seções totalizadas e os votos publicados pelo TSE; a decisão para Presidente é nacional.';
     mapDescription.textContent = 'Presidente no ' + round + 'º turno por estado. Cada cor mostra quem lidera naquela unidade da federação; a eleição presidencial é decidida pela soma nacional.';
     grid.innerHTML = ordered.map(([code, name]) => '<li class="state-card' + (code === 'to' ? ' state-card-to' : '') + '"><div class="state-card-head"><strong>' + esc(name) + '</strong><span>' + code.toUpperCase() + '</span></div>' + content(code) + '</li>').join('');
     renderMap();

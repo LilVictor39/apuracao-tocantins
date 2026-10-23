@@ -69,12 +69,16 @@ O computador serve os arquivos do site; o navegador do celular consulta o TSE di
 
 | Recurso | Como funciona |
 | :--- | :--- |
-| **Brasil por estado** | Lista e mapa acompanham o turno selecionado e mostram quem lidera para Presidente em cada uma das 27 unidades da federação. Tocantins ganha destaque próprio. |
+| **Brasil por estado** | Lista e mapa acompanham o turno selecionado; cada card mostra quem lidera para Presidente e o percentual de seções totalizadas nas 27 unidades da federação. Tocantins ganha destaque próprio. |
 | **Tocantins por município** | Mapa dos 139 municípios, com busca, lista acessível e cor para o mais votado. Áreas sem votos ficam neutras; empate tem cor própria. |
 | **Tema claro e escuro** | Um botão anima o sol virando lua. O tema claro é o padrão na primeira visita, e a escolha fica salva no navegador. |
 | **Comparativo com 2022** | Compara apenas Presidente no Tocantins, no **1º turno** de cada eleição, sem tratar candidatos de anos diferentes como equivalentes. |
 | **Gatinhos reativos** | Reagem quando muda quem lidera ou quando a totalização chega a 100%; respeitam a preferência por movimento reduzido. |
 | **Alertas opcionais** | Podem avisar sobre troca de liderança e sobre 50%, 90% e 100% das seções totalizadas. |
+
+### Card para apresentar o projeto
+
+Com o painel local em execução (`npm start`), abra **http://127.0.0.1:4173/docs/card-professor.html**. Você também pode abrir o arquivo [`dist/docs/card-professor.html`](dist/docs/card-professor.html) diretamente no navegador, sem iniciar o servidor. Cole o link do site no Vercel e clique em **Baixar card em PNG**. Inclua também o link no texto da mensagem ao professor, pois a imagem não é clicável.
 
 <details>
 <summary><strong>Veja como ler os números e os alertas</strong></summary>
