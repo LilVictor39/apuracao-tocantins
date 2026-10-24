@@ -123,3 +123,70 @@ html[data-theme="dark"] .toast{background:#efe3d1;color:#242c24}
 .state-meta{margin:10px 0 0;color:var(--muted);font-size:10px;line-height:1.5}
 @media(max-width:1050px){.states-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.tocantins-spotlight{grid-template-columns:1fr;padding:18px;gap:14px}.state-highlight-result{padding:14px 0 0;border-left:0;border-top:1px solid var(--line)}.states-toolbar{align-items:flex-start;flex-direction:column}.states-grid{grid-template-columns:1fr}}
+
+/* Destaque do Tocantins */
+.tocantins-spotlight{
+  grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);
+  align-items:stretch;
+  gap:clamp(18px,3vw,42px);
+  padding:clamp(20px,2.5vw,34px);
+  border-width:1px;
+  border-radius:24px;
+  background:radial-gradient(circle at 0 0,color-mix(in srgb,var(--accent) 9%,transparent),transparent 48%),var(--panel);
+}
+.tocantins-spotlight>div:first-child{display:flex;flex-direction:column;justify-content:center;min-width:0}
+.tocantins-spotlight .state-eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:11px;letter-spacing:1.6px}
+.tocantins-spotlight .state-eyebrow::before{content:'';width:7px;height:7px;flex:none;border-radius:50%;background:var(--accent)}
+.tocantins-spotlight h2{display:flex;align-items:center;gap:14px;max-width:580px;margin:15px 0 12px;font-size:clamp(24px,2.4vw,34px);line-height:1.15;letter-spacing:-.02em}
+.tocantins-spotlight .spotlight-flag{width:48px;height:35px;margin:0;flex:none;border-radius:6px}
+.tocantins-spotlight>div:first-child>p{max-width:540px;font-size:14px;line-height:1.6}
+.tocantins-spotlight .state-highlight-result{min-width:0;padding:20px 22px;border:1px solid var(--line);border-radius:17px;background:var(--bg)}
+.tocantins-spotlight .state-progress{margin:0;font-size:12px}
+.tocantins-spotlight .state-progress strong{font-family:Manrope,sans-serif;font-size:22px;line-height:1.2}
+.tocantins-spotlight .state-progress-track{height:9px;margin-top:10px}
+.tocantins-spotlight .state-leader{display:flex;align-items:center;gap:8px;margin:17px 0 3px;color:var(--accent);font-size:13px;font-weight:700}
+.tocantins-spotlight .state-leader::before{content:'';width:7px;height:7px;flex:none;border-radius:50%;background:currentColor}
+.tocantins-spotlight .state-candidates{gap:0}
+.tocantins-spotlight .state-candidates>div{gap:2px 12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+.tocantins-spotlight .state-candidates span{font-weight:600}
+.tocantins-spotlight .state-candidates strong{font-family:Manrope,sans-serif;font-size:16px}
+.tocantins-spotlight .state-candidates small{font-size:11px}
+.tocantins-spotlight .state-meta{margin:11px 0 0;font-size:11px}
+.tocantins-spotlight .state-empty{margin:17px 0 0;font-size:13px}
+@media(max-width:900px){
+  .tocantins-spotlight{grid-template-columns:1fr;gap:18px}
+  .tocantins-spotlight .state-highlight-result{padding:18px}
+}
+@media(max-width:480px){
+  .tocantins-spotlight{padding:18px}
+  .tocantins-spotlight h2{gap:10px;font-size:25px}
+  .tocantins-spotlight .spotlight-flag{width:40px;height:29px}
+  .tocantins-spotlight .state-highlight-result{padding:16px}
+}
+
+/* Patinhas que surgem em pontos diferentes do destaque */
+.tocantins-spotlight>div:first-child{position:relative;isolation:isolate;overflow:hidden}
+.tocantins-spotlight>div:first-child>:not(.spotlight-paws){position:relative;z-index:1}
+.spotlight-paws{position:absolute;inset:0;z-index:0;pointer-events:none}
+.spotlight-paws span{
+  position:absolute;display:block;width:var(--paw-size,23px);height:var(--paw-size,23px);
+  background:var(--accent);
+  -webkit-mask:url('./patinha.svg') center/contain no-repeat;
+  mask:url('./patinha.svg') center/contain no-repeat;
+  opacity:0;
+  animation:spotlight-paw-appear 5.5s ease-in-out infinite;
+}
+.spotlight-paws span:nth-child(2){animation-delay:.45s}
+.spotlight-paws span:nth-child(3){animation-delay:.9s}
+.spotlight-paws span:nth-child(4){animation-delay:1.35s}
+.spotlight-paws span:nth-child(5){animation-delay:1.8s}
+.spotlight-paws span:nth-child(6){animation-delay:2.25s}
+.spotlight-paws span:nth-child(7){animation-delay:2.7s}
+@keyframes spotlight-paw-appear{
+  0%,8%,100%{opacity:0;transform:translateY(5px) rotate(var(--paw-tilt)) scale(.8)}
+  22%,52%{opacity:.24;transform:translateY(0) rotate(var(--paw-tilt)) scale(1)}
+  72%{opacity:0;transform:translateY(-3px) rotate(var(--paw-tilt)) scale(1)}
+}
+@media(prefers-reduced-motion:reduce){
+  .spotlight-paws span{animation:none;opacity:.16;transform:rotate(var(--paw-tilt))}
+}

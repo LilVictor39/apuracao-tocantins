@@ -115,6 +115,9 @@ export function initBrazil(getState, fetchRegion, getRound, isAuto = () => true)
   mapSvg.addEventListener('keydown', event => { if ((event.key === 'Enter' || event.key === ' ') && event.target.dataset.uf) { event.preventDefault(); selectUf(event.target.dataset.uf); } });
   mapList.addEventListener('click', event => { const target = event.target.closest('button[data-uf]'); if (target) selectUf(target.dataset.uf); });
 
+  spotlight.addEventListener('animationiteration', event => {
+    if (event.animationName === 'spotlight-paw-appear' && event.target.matches('.spotlight-paws span')) event.target.style.cssText = randomPawStyle();
+  });
   function content(code) {
     const office = president();
     const summary = regionSummary(getState(office, code));
@@ -135,9 +138,11 @@ export function initBrazil(getState, fetchRegion, getRound, isAuto = () => true)
       (summary.updated ? ' · ' + esc(summary.updated) + ' (Brasília)' : '') + '</p>';
   }
 
+  const randomPawStyle = () => 'left:' + (5 + Math.round(Math.random() * 82)) + '%;top:' + (5 + Math.round(Math.random() * 78)) + '%;--paw-size:' + (19 + Math.round(Math.random() * 8)) + 'px;--paw-tilt:' + (Math.round(Math.random() * 50) - 25) + 'deg';
   function render() {
     const round = getRound();
-    spotlight.innerHTML = '<div><span class="state-eyebrow">NOSSO ESTADO EM DESTAQUE</span><h2><img class="to-flag spotlight-flag" src="./bandeira-tocantins.svg" alt="Bandeira do Tocantins" width="39" height="28">Tocantins na votação presidencial</h2><p>Resultado estadual do ' + round + 'º turno. A eleição para Presidente é decidida pela votação nacional.</p></div><div class="state-highlight-result">' + content('to') + '</div>';
+    const pawPrints = '<div class="spotlight-paws" aria-hidden="true">' + Array.from({ length: 7 }, () => '<span style="' + randomPawStyle() + '"></span>').join('') + '</div>';
+    spotlight.innerHTML = '<div><span class="state-eyebrow">NOSSO ESTADO EM DESTAQUE</span><h2><img class="to-flag spotlight-flag" src="./bandeira-tocantins.svg" alt="Bandeira do Tocantins" width="39" height="28">Tocantins na votação presidencial</h2><p>Resultado estadual do ' + round + 'º turno. A eleição para Presidente é decidida pela votação nacional.</p>' + pawPrints + '</div><div class="state-highlight-result">' + content('to') + '</div>';
     statesDescription.textContent = 'Compare a votação presidencial do ' + round + 'º turno em cada estado e no Distrito Federal. Cada card mostra as seções totalizadas e os votos publicados pelo TSE; a decisão para Presidente é nacional.';
     mapDescription.textContent = 'Presidente no ' + round + 'º turno por estado. Cada cor mostra quem lidera naquela unidade da federação; a eleição presidencial é decidida pela soma nacional.';
     grid.innerHTML = ordered.map(([code, name]) => '<li class="state-card' + (code === 'to' ? ' state-card-to' : '') + '"><div class="state-card-head"><strong>' + esc(name) + '</strong><span>' + code.toUpperCase() + '</span></div>' + content(code) + '</li>').join('');
